@@ -1,6 +1,6 @@
-import { Usuario } from "./usuario.interface";
+import type { Usuario } from "./usuario.interface";
 
-export interface Auth {
+export interface AuthResponse {
     user: Usuario;
     acccessToken: string;
     success: boolean;

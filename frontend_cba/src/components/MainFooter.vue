@@ -2,6 +2,11 @@
 
 import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/index'
+
+import course1 from '@/assets/img/course-1.jpg'
+import course2 from '@/assets/img/course-1.jpg'
+import course3 from '@/assets/img/course-1.jpg'
+
 const authStore = useAuthStore()
 const location = useRoute()
 

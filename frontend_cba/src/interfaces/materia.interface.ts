@@ -1,5 +1,3 @@
-import { Docente } from "./docente.interface";
-
 export interface Materia {
     id: number
     nombre: string
