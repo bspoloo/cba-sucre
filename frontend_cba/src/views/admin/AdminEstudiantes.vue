@@ -1,14 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import axios from '@/plugins/axios' // Tu axios configurado con token
-
-interface Estudiante {
-  id: number
-  ci: number
-  nombres: string
-  apellidos: string
-  telefono: string
-}
+import { AxiosRequestConfig } from 'axios'
 
 // Lista de estudiantes
 const estudiantes = ref<Estudiante[]>([])
@@ -19,7 +12,7 @@ const nuevoEstudiante = ref<Partial<Estudiante>>({})
 // Función para cargar estudiantes desde backend
 const cargarEstudiantes = async () => {
   try {
-    const { data } = await axios.get('/estudiantes')
+    const { data } = await axios.get(`${import.meta.env.VITE_BASE_URL_API}/estudiantes`)
     estudiantes.value = data
   } catch (error) {
     console.error('Error al cargar estudiantes:', error)
@@ -33,7 +26,8 @@ const agregarEstudiante = async () => {
     return
   }
   try {
-    const { data } = await axios.post('/estudiantes', nuevoEstudiante.value)
+    
+    const { data } = await axios.post(`${import.meta.env.VITE_BASE_URL_API}/estudiantes`, nuevoEstudiante.value, )
     estudiantes.value.push(data)
     nuevoEstudiante.value = {}
   } catch (error) {

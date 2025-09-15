@@ -23,7 +23,7 @@ let AuthService = class AuthService {
         const usuarioOk = await this.usuarioService.validate(usuario, clave);
         const payload = { sub: usuarioOk.id };
         const access_token = await this.getAccessToken(payload);
-        return Object.assign(Object.assign({}, usuarioOk), { access_token });
+        return { user: usuarioOk, acccessToken: access_token, success: true };
     }
     async getAccessToken(payload) {
         const accessToken = await this.jwtService.sign(payload, {

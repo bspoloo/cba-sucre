@@ -4,13 +4,11 @@ import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/index'
 const authStore = useAuthStore()
 const location = useRoute()
-import course1 from '@/assets/img/course-1.jpg'
-import course2 from '@/assets/img/course-2.jpg'
-import course3 from '@/assets/img/course-3.jpg'
+
 </script>
 
 <template>
-  <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
         <div class="container py-5">
             <div class="row g-5">
                 <div class="col-lg-3 col-md-6">
@@ -61,7 +59,8 @@ import course3 from '@/assets/img/course-3.jpg'
                     <p>Dolor amet sit justo amet elitr clita ipsum elitr est.</p>
                     <div class="position-relative mx-auto" style="max-width: 400px;">
                         <input class="form-control border-0 w-100 py-3 ps-4 pe-5" type="text" placeholder="Your email">
-                        <button type="button" class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
+                        <button type="button"
+                            class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
                     </div>
                 </div>
             </div>

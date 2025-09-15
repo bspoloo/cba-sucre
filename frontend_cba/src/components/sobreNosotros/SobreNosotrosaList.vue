@@ -43,4 +43,4 @@ export default {
     margin: 10px 0;
     color: #34495e;
 }
-</style></template>
+</style>

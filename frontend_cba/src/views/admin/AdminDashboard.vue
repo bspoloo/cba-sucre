@@ -16,26 +16,7 @@ const menuItems = [
 
 <template>
   <div class="admin-container d-flex">
-    <!-- Menú lateral -->
-    <nav class="sidebar bg-dark text-white p-3" :class="{ collapsed: !menuOpen }">
-        <ul class="nav flex-column">
-          <h1>class="mb-4">Panel Admin</h1>
-            <router-link to="/admin/estudiantes">Estudiantes</router-link> |
-            <router-link to="/admin/docentes">Docentes</router-link>
-            <router-view></router-view>
-        <li class="nav-item" v-for="item in menuItems" :key="item.name">
-          <a class="nav-link text-white" :href="item.path">{{ item.name }}</a>
-        </li>
-      </ul>
-      <button @click="menuOpen = !menuOpen" class="btn btn-sm btn-secondary mt-3">
-        {{ menuOpen ? 'Cerrar' : 'Abrir' }}
-      </button>
-    </nav>
-
-    <!-- Contenido principal -->
-    <div class="content p-4 flex-grow-1">
-      <router-view></router-view> <!-- Aquí se cargan las rutas hijas -->
-    </div>
+    dashboard
   </div>
 </template>
 

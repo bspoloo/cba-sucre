@@ -11,6 +11,8 @@ import SobreNosotros from '../views/SobreNosotros.vue'
 import AdminEstudiantes from "../views/admin/AdminEstudiantes.vue";
 import AdminDocentes from "../views/admin/AdminDocentes.vue";
 import AdminMaterias from "../views/admin/AdminMaterias.vue";
+import AdminApp from '@/views/admin/AdminApp.vue'
+import Login from '@/views/Login.vue'
 
 const routes = [
   { path: '/', component: HomeView },
@@ -23,9 +25,11 @@ const routes = [
   // Rutas admin (solo admins)
   {
     path: '/admin',
-    component: AdminDashboard,
+    component: AdminApp,
     children: [
-      { path: '', component: AdminDashboard }, // Dashboard por defecto
+      { path: '', component: AdminApp }, // Dashboard por defecto
+      { path: 'login', component: Login }, // Dashboard por defecto
+      { path: 'dashboard', component: AdminDashboard }, // Dashboard por defecto
       { path: 'estudiantes', component: AdminEstudiantes },
       { path: 'docentes', component: AdminDocentes },
       { path: 'materias', component: AdminMaterias },

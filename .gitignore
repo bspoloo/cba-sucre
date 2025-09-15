@@ -1,6 +1,8 @@
 # compiled output
 /dist
 /node_modules
+/frontend_cba/node_modules
+/backend_cba/node_modules
 /build
 
 # Logs
