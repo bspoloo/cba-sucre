@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import axios from '@/plugins/axios' // Tu axios configurado con token
-import { AxiosRequestConfig } from 'axios'
+import axios from '@/plugins/axios'
+import type { Estudiante } from '@/interfaces/estudiante.interface'
 
 // Lista de estudiantes
 const estudiantes = ref<Estudiante[]>([])

@@ -2,9 +2,9 @@ import type { Docente } from "./docente.interface";
 
 export interface Usuario {
     id: number;
-    usuario: string;
+    name: string;
     clave: string; // Cambiado a opcional
     email: string;
-    tipoUsuario: string;
+    rol: string;
     docente: Docente;
 }

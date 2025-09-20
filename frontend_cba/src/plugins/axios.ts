@@ -9,14 +9,14 @@ const axios = Axios.create({
 })
 
 axios.interceptors.request.use(config => {
-  const pinia = getActivePinia() // ✅ obtiene la instancia de Pinia activa
-  if (!pinia) return config      // si no hay Pinia activo, no agregamos token
+  const pinia = getActivePinia()
+  if (!pinia) return config 
 
   const authStore = useAuthStore(pinia)
   if (config.headers) {
     config.headers['Content-Type'] = 'application/json'
-    if (authStore.token) {
-      config.headers['Authorization'] = `Bearer ${authStore.token}`
+    if (authStore.accessToken) {
+      config.headers['Authorization'] = `Bearer ${authStore.accessToken}`
     }
   }
   return config

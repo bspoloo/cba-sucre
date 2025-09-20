@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import axios from '@/plugins/axios'
-import { Docente } from '@/interfaces/docente.interface'
+import type { Docente } from '@/interfaces/docente.interface'
 
 const docentes = ref<Docente[]>([])
 const nuevoDocente = ref<Partial<Docente>>({})
