@@ -16,14 +16,47 @@ exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
 const swagger_1 = require("@nestjs/swagger");
-const auth_login_dto_1 = require("./dto/auth-login.dto");
 const auth_public_decorator_1 = require("./decorators/auth-public.decorator");
+const credentials_class_1 = require("./dto/credentials.class");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
-    async login(authLoginDto) {
-        return this.authService.login(authLoginDto);
+    async login(credentials, res) {
+        const { acccessToken, refreshToken, user } = await this.authService.login(credentials);
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        });
+        return {
+            acccessToken: acccessToken,
+            refreshToken: refreshToken,
+            user: user
+        };
+    }
+    async refresh(req, res) {
+        const oldCookie = req.cookies['refreshToken'];
+        const { accessToken, refreshToken: newRefresh, user } = await this.authService.refreshTokens(oldCookie);
+        res.cookie('refreshToken', newRefresh, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
+        return {
+            acccessToken: accessToken,
+            user: user,
+        };
+    }
+    async logout(res) {
+        res.clearCookie('refreshToken', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax'
+        });
+        return { message: 'Logout exitoso', success: true };
     }
 };
 exports.AuthController = AuthController;
@@ -32,10 +65,30 @@ __decorate([
     (0, common_1.Post)('login'),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Res)({ passthrough: true })),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [auth_login_dto_1.AuthLoginDto]),
+    __metadata("design:paramtypes", [credentials_class_1.Credentials, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
+__decorate([
+    (0, auth_public_decorator_1.Public)(),
+    (0, common_1.Get)('refresh'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Res)({ passthrough: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "refresh", null);
+__decorate([
+    (0, auth_public_decorator_1.Public)(),
+    (0, common_1.Post)('logout'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Res)({ passthrough: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "logout", null);
 exports.AuthController = AuthController = __decorate([
     (0, swagger_1.ApiTags)('auth'),
     (0, swagger_1.ApiBearerAuth)(),

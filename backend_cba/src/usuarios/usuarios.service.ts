@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
-  InternalServerErrorException, 
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
@@ -13,39 +13,39 @@ import { In, Repository } from 'typeorm';
 
 @Injectable()
 export class UsuariosService {
-  constructor(@InjectRepository(Usuario) private usuariosRepository: Repository<Usuario>) {}
+  constructor(@InjectRepository(Usuario) private usuariosRepository: Repository<Usuario>) { }
 
   async create(createUsuarioDto: CreateUsuarioDto): Promise<Usuario> {
     try {
-    // Verificar si el usuario ya existe
-    const existe = await this.usuariosRepository.findOneBy({
-      usuario: createUsuarioDto.usuario.trim(),
-    });
+      // Verificar si el usuario ya existe
+      const existe = await this.usuariosRepository.findOneBy({
+        name: createUsuarioDto.name.trim(),
+      });
 
-    if (existe) {
-      throw new ConflictException('El usuario ya existe');
+      if (existe) {
+        throw new ConflictException('El usuario ya existe');
+      }
+
+      // Crear el nuevo usuario
+      const usuario = this.usuariosRepository.create({
+        name: createUsuarioDto.name.trim(),
+        clave: process.env.DEFAULT_PASSWORD || 'default_password',
+        email: createUsuarioDto.email.trim(),
+        rol: createUsuarioDto.rol.trim(),
+      });
+
+
+      // Guardar el usuario en la base de datos
+      const usuarioBd = await this.usuariosRepository.save(usuario);
+
+      // Eliminar la clave antes de devolver el objeto
+      usuarioBd.clave = '';  // O también puedes usar '' si prefieres una cadena vacía
+
+      return usuarioBd;
+    } catch (error) {
+      console.error('Error al crear el usuario:', error);
+      throw new InternalServerErrorException('Error al crear el usuario');
     }
-
-    // Crear el nuevo usuario
-    const usuario = this.usuariosRepository.create({
-      usuario: createUsuarioDto.usuario.trim(),
-      clave: process.env.DEFAULT_PASSWORD || 'default_password',
-      email: createUsuarioDto.email.trim(),
-      tipoUsuario: createUsuarioDto.tipoUsuario.trim(),
-    });
-    
-
-    // Guardar el usuario en la base de datos
-    const usuarioBd = await this.usuariosRepository.save(usuario);
-
-    // Eliminar la clave antes de devolver el objeto
-    usuarioBd.clave = '';  // O también puedes usar '' si prefieres una cadena vacía
-
-    return usuarioBd;
-  } catch (error) {
-    console.error('Error al crear el usuario:', error);
-    throw new InternalServerErrorException('Error al crear el usuario');
-  }
   }
 
   async findAll(): Promise<Usuario[]> {
@@ -71,23 +71,20 @@ export class UsuariosService {
     return this.usuariosRepository.delete(usuario.id);
   }
 
-  async validate(usuario: string, clave: string): Promise<Usuario> {
-    const usuarioOk = await this.usuariosRepository.findOne({
-      where: { usuario },
-      select: ['id', 'usuario', 'clave', 'email', 'tipoUsuario'],
+  async validate(name: string, clave: string): Promise<Usuario> {
+    const user = await this.usuariosRepository.findOne({
+      where: { name: name },
     });
 
-    if (!usuarioOk) throw new NotFoundException('Usuario inexistente');
+    if (!user) throw new NotFoundException('Usuario inexistente');
 
-    // Validar la clave
-    const isPasswordValid = await usuarioOk.validatePassword(clave);
+    const isPasswordValid = await user.validatePassword(clave);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Clave incorrecta');
     }
 
-    // Eliminar la clave antes de devolver el usuario
-    usuarioOk.clave = '';  // O '' si prefieres una cadena vacía
+    user.clave = '';  // O '' si prefieres una cadena vacía
 
-    return usuarioOk;
+    return user;
   }
 }

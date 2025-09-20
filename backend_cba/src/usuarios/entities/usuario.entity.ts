@@ -18,7 +18,7 @@ import {
     id!: number;
   
     @Column('varchar', { length: 12, nullable: false })
-    usuario!: string;
+    name!: string;
   
     @Column('varchar', { length: 100, nullable: false })
     clave!: string; // Cambiado a opcional
@@ -27,7 +27,7 @@ import {
     email!: string;
 
     @Column('varchar', { length: 20, nullable: false }) // Agregado: columna para tipoUsuario
-    tipoUsuario!: string;
+    rol!: string;
   
     // @OneToOne(() => Estudiante, estudiante => estudiante.usuario)
     // @JoinColumn()

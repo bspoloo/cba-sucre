@@ -25,17 +25,17 @@ let UsuariosService = class UsuariosService {
         try {
             // Verificar si el usuario ya existe
             const existe = await this.usuariosRepository.findOneBy({
-                usuario: createUsuarioDto.usuario.trim(),
+                name: createUsuarioDto.name.trim(),
             });
             if (existe) {
                 throw new common_1.ConflictException('El usuario ya existe');
             }
             // Crear el nuevo usuario
             const usuario = this.usuariosRepository.create({
-                usuario: createUsuarioDto.usuario.trim(),
+                name: createUsuarioDto.name.trim(),
                 clave: process.env.DEFAULT_PASSWORD || 'default_password',
                 email: createUsuarioDto.email.trim(),
-                tipoUsuario: createUsuarioDto.tipoUsuario.trim(),
+                rol: createUsuarioDto.rol.trim(),
             });
             // Guardar el usuario en la base de datos
             const usuarioBd = await this.usuariosRepository.save(usuario);
@@ -67,21 +67,18 @@ let UsuariosService = class UsuariosService {
         const usuario = await this.findOne(id);
         return this.usuariosRepository.delete(usuario.id);
     }
-    async validate(usuario, clave) {
-        const usuarioOk = await this.usuariosRepository.findOne({
-            where: { usuario },
-            select: ['id', 'usuario', 'clave', 'email', 'tipoUsuario'],
+    async validate(name, clave) {
+        const user = await this.usuariosRepository.findOne({
+            where: { name: name },
         });
-        if (!usuarioOk)
+        if (!user)
             throw new common_1.NotFoundException('Usuario inexistente');
-        // Validar la clave
-        const isPasswordValid = await usuarioOk.validatePassword(clave);
+        const isPasswordValid = await user.validatePassword(clave);
         if (!isPasswordValid) {
             throw new common_1.UnauthorizedException('Clave incorrecta');
         }
-        // Eliminar la clave antes de devolver el usuario
-        usuarioOk.clave = ''; // O '' si prefieres una cadena vacía
-        return usuarioOk;
+        user.clave = ''; // O '' si prefieres una cadena vacía
+        return user;
     }
 };
 exports.UsuariosService = UsuariosService;
