@@ -17,13 +17,15 @@ import router from './router'
 import ToastService from 'primevue/toastservice';
 import ConfirmationService from 'primevue/confirmationservice';
 import Toast from 'primevue/toast';
+import { ConfirmDialog, Dialog } from 'primevue';
 
 const app = createApp(App)
 const pinia = createPinia()
+app.component('Dialog', Dialog);
+app.component('ConfirmDialog', ConfirmDialog);
 
 app.use(ToastService);
 app.use(ConfirmationService);
-
 app.use(pinia)
 app.use(router)
 

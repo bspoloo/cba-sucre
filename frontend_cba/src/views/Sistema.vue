@@ -21,20 +21,11 @@ const handleLogin = async (values: any) => {
   errorMessage.value = "";
 
   try {
-    const response = await api.post(`${import.meta.env.VITE_BASE_URL_API}/auth/login`, {
-      usuario: values.username,
-      clave: values.password,
-    });
-    
-    console.log(response);
-    
-    // Guardar datos de autenticación
-    authStore.login(values.username, values.password);
+    const response = await authStore.login(values.username, values.password);
 
-    const { data } = response;
-    console.log(data);
-    
-    if (data) {
+    const { success } = response;
+
+    if (success) {
       toast.add({
         severity: 'success',
         summary: 'Éxito',

@@ -38,7 +38,7 @@ const agregarDocente = async () => {
         severity: 'error',
         summary: 'Error',
         detail: `${message ?? 'Error desconocido'}`,
-        life: 100000
+        life: 3000
       });
     });
   }
