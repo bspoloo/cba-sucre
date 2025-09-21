@@ -22,7 +22,7 @@ __decorate([
     (0, class_validator_1.MaxLength)(12, { message: 'El campo usario no debe ser mayor a 12 caracteres' }),
     (0, class_validator_1.MinLength)(4, { message: 'El campo usario no debe ser menor a 4 caracteres' }),
     __metadata("design:type", String)
-], CreateUsuarioDto.prototype, "usuario", void 0);
+], CreateUsuarioDto.prototype, "name", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsNotEmpty)({ message: 'El campo email no debe ser vacío' }),
@@ -38,4 +38,4 @@ __decorate([
     (0, class_validator_1.MaxLength)(15, { message: 'El campo tipo Usuario no debe ser mayor a 15 caracteres' }),
     (0, class_validator_1.MinLength)(3, { message: 'El campo tipo Usuario no debe ser menor a 3 caracteres' }),
     __metadata("design:type", String)
-], CreateUsuarioDto.prototype, "tipoUsuario", void 0);
+], CreateUsuarioDto.prototype, "rol", void 0);

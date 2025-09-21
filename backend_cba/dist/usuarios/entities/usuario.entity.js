@@ -66,7 +66,7 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)('varchar', { length: 12, nullable: false }),
     __metadata("design:type", String)
-], Usuario.prototype, "usuario", void 0);
+], Usuario.prototype, "name", void 0);
 __decorate([
     (0, typeorm_1.Column)('varchar', { length: 100, nullable: false }),
     __metadata("design:type", String)
@@ -79,7 +79,7 @@ __decorate([
     (0, typeorm_1.Column)('varchar', { length: 20, nullable: false }) // Agregado: columna para tipoUsuario
     ,
     __metadata("design:type", String)
-], Usuario.prototype, "tipoUsuario", void 0);
+], Usuario.prototype, "rol", void 0);
 __decorate([
     (0, typeorm_1.OneToOne)(() => docente_entity_1.Docente, (docente) => docente.usuario),
     (0, typeorm_1.JoinColumn)(),

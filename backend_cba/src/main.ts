@@ -15,7 +15,7 @@ async function bootstrap() {
 
   // Configuración de CORS
   app.enableCors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    origin: process.env.FRONTEND_URL,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
     credentials: true,
@@ -30,8 +30,8 @@ async function bootstrap() {
       transform: true,
     }),
   );
- 
-// Pipes globales
+
+  // Pipes globales
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -55,11 +55,10 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-docs', app, document);
 
-  // Puerto desde variables de entorno
   const port = process.env.PORT || 3300;
   await app.listen(port);
 
-  console.log(`🚀 Servidor corriendo en: http://localhost:${port}`);
-  console.log(`📄 Documentación API: http://localhost:${port}/api-docs`);
+  console.log(`🚀 Servidor corriendo en: ${process.env.FRONTEND_URL}:${port}`);
+  console.log(`📄 Documentación API: ${process.env.FRONTEND_URL}:${port}/api-docs`);
 }
 bootstrap();

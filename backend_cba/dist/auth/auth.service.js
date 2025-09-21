@@ -19,18 +19,45 @@ let AuthService = class AuthService {
         this.jwtService = jwtService;
     }
     async login(authLoginDto) {
-        const { usuario, clave } = authLoginDto;
-        const usuarioOk = await this.usuarioService.validate(usuario, clave);
-        const payload = { sub: usuarioOk.id };
+        const { usuario: user_name, clave } = authLoginDto;
+        const user = await this.usuarioService.validate(user_name, clave);
+        const payload = { sub: user.id };
         const access_token = await this.getAccessToken(payload);
-        return { user: usuarioOk, acccessToken: access_token, success: true };
+        const refresh_token = await this.getRefreshToken(payload);
+        return {
+            acccessToken: access_token,
+            refreshToken: refresh_token,
+            user: user,
+        };
     }
     async getAccessToken(payload) {
         const accessToken = await this.jwtService.sign(payload, {
-            secret: process.env.JWT_SECRET || 'default_secret',
+            secret: process.env.JWT_SECRET || 'default_access_token_secret',
             expiresIn: process.env.JWT_TOKEN_EXPIRATION,
         });
         return accessToken;
+    }
+    async getRefreshToken(payload) {
+        const refreshToken = await this.jwtService.sign(payload, {
+            secret: process.env.JWT_SECRET || 'default_refresh_secret',
+            expiresIn: process.env.JWT_TOKEN_EXPIRATION,
+        });
+        return refreshToken;
+    }
+    async refreshTokens(oldRefresh) {
+        try {
+            const payload = this.jwtService.verify(oldRefresh, {
+                secret: process.env.JWT_REFRESH_SECRET || 'refresh_default_secret',
+            });
+            const userId = payload.sub;
+            const user = await this.usuarioService.findOne(userId);
+            const accessToken = this.jwtService.sign({ sub: userId }, { secret: process.env.JWT_SECRET || 'default_secret', expiresIn: '15m' });
+            const refreshToken = this.jwtService.sign({ sub: userId }, { secret: process.env.JWT_REFRESH_SECRET || 'refresh_default_secret', expiresIn: '7d' });
+            return { accessToken, refreshToken, user };
+        }
+        catch (err) {
+            throw new common_1.UnauthorizedException('Refresh token inválido o expirado');
+        }
     }
     async verifyPayload(payload) {
         let usuario;

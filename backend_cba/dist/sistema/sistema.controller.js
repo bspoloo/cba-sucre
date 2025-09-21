@@ -16,13 +16,13 @@ exports.SistemaController = void 0;
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("../auth/auth.service");
 const auth_public_decorator_1 = require("../auth/decorators/auth-public.decorator");
-const auth_login_dto_1 = require("../auth/dto/auth-login.dto"); // usa el dto del módulo auth
+const credentials_class_1 = require("../auth/dto/credentials.class"); // usa el dto del módulo auth
 let SistemaController = class SistemaController {
     constructor(authService) {
         this.authService = authService;
     }
-    login(authLoginDto) {
-        return this.authService.login(authLoginDto);
+    async login(credentials) {
+        return this.authService.login(credentials);
     }
 };
 exports.SistemaController = SistemaController;
@@ -31,8 +31,8 @@ __decorate([
     (0, common_1.Post)('login'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [auth_login_dto_1.AuthLoginDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [credentials_class_1.Credentials]),
+    __metadata("design:returntype", Promise)
 ], SistemaController.prototype, "login", null);
 exports.SistemaController = SistemaController = __decorate([
     (0, common_1.Controller)('sistema'),

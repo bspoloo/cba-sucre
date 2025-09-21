@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
 
-export class AuthLoginDto {
+export class Credentials {
   @ApiProperty()
   @IsNotEmpty({ message: 'El campo Usuario no debe ser vacío' })
   @IsString({ message: 'El campo Usuario debe ser de tipo cadena' })

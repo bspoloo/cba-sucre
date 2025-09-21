@@ -1,63 +1,84 @@
-<!-- filepath: d:\PROYECTO DE GRADO\cba-sucre\frontend_cba\src\views\Sistema.vue -->
 <template>
-  <div class="login">
-    <h1>Iniciar Sesión</h1>
-    <form @submit.prevent="handleLogin">
-      <div class="form-group">
-        <label for="username">Usuario</label>
-        <input type="text" id="username" v-model="username" placeholder="Ingresa tu usuario" required />
-      </div>
-      <div class="form-group">
-        <label for="password">Contraseña</label>
-        <input type="password" id="password" v-model="password" placeholder="Ingresa tu contraseña" required />
-      </div>
-      <button type="submit">Ingresar</button>
-    </form>
-    <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+  <div>
+    <UserDetails v-if="authStore.isLoggedIn" />
+    <LoginUser v-else />
   </div>
 </template>
 
-
 <script setup lang="ts">
 import { ref } from 'vue';
-import { AuthResponse } from "@/interfaces/auth.interface";
 import axios from "@/plugins/axios";
+import { useToast } from 'primevue/usetoast';
+import Toast from 'primevue/toast';
+import InputText from 'primevue/inputtext';
+import Password from 'primevue/password';
+import Button from 'primevue/button';
+import { Form, Field } from 'vee-validate';
+import * as yup from 'yup';
+import LoginUser from '@/components/admin/LoginUser.vue';
+import UserDetails from '@/components/user/UserDetails.vue';
+import { useAuthStore } from '@/stores';
 
-
-const username = ref("");
-const password = ref("");
+const authStore = useAuthStore();
+const toast = useToast();
 const errorMessage = ref("");
 
-const handleLogin = async () => {
-  if (username.value && password.value) {
-    try {
-      const response = await axios.post(`http://localhost:3300/auth/login`, {
-        usuario: username.value,
-        clave: password.value,
-      });
-      
-      const { data } = response;
-      const authResponse: AuthResponse = data;
+// Esquema de validación
+const schema = yup.object({
+  username: yup.string().required('El usuario es requerido'),
+  password: yup.string().required('La contraseña es requerida'),
+});
 
-      if (authResponse.success) {
-        alert("Inicio de sesión exitoso");
-        errorMessage.value = "";
-      } else {
-        errorMessage.value = "Credenciales incorrectas. Inténtalo de nuevo.";
-      }
-    } catch (error) {
-      console.error("Error al iniciar sesión:", error);
-      errorMessage.value = "Ocurrió un error al iniciar sesión. Inténtalo más tarde.";
+const handleLogin = async (values: any) => {
+  errorMessage.value = "";
+
+  try {
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL_API}/auth/login`, {
+      usuario: values.username,
+      clave: values.password,
+    });
+    console.log(response);
+    
+    authStore.login(values.username, values.password);
+
+    const { data } = response;
+    console.log(data);
+    
+    if (data) {
+      toast.add({
+        severity: 'success',
+        summary: 'Éxito',
+        detail: 'Inicio de sesión exitoso',
+        life: 3000
+      });
+
+      // router.push('/dashboard');
+    } else {
+      errorMessage.value = "Credenciales incorrectas. Inténtalo de nuevo.";
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Credenciales incorrectas',
+        life: 3000
+      });
     }
-  } else {
-    errorMessage.value = "Por favor, completa todos los campos.";
+  } catch (error) {
+    console.error("Error al iniciar sesión:", error);
+    errorMessage.value = "Ocurrió un error al iniciar sesión. Inténtalo más tarde.";
+
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: 'Error al iniciar sesión',
+      life: 3000
+    });
   }
 };
 </script>
 
 <style scoped>
 .login {
-  max-width: 400px;
+  max-width: 300px;
   margin: 0 auto;
   padding: 20px;
   border: 1px solid #ccc;
@@ -81,13 +102,13 @@ const handleLogin = async () => {
   font-weight: bold;
 }
 
-.form-group input {
+.form-group :deep(.p-inputtext) {
   width: 100%;
   padding: 8px;
   box-sizing: border-box;
 }
 
-button {
+:deep(.p-button) {
   width: 100%;
   padding: 10px;
   background-color: #007bff;
@@ -97,7 +118,7 @@ button {
   cursor: pointer;
 }
 
-button:hover {
+:deep(.p-button):hover {
   background-color: #0056b3;
 }
 
@@ -105,5 +126,12 @@ button:hover {
   color: red;
   margin-top: 10px;
   text-align: center;
+}
+
+.p-error {
+  color: #e24c4c;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
 }
 </style>
