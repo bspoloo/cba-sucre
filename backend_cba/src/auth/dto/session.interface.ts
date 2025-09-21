@@ -1,7 +1,7 @@
 import { Usuario } from "@/usuarios/entities/usuario.entity";
 
 export interface Session {
-    acccessToken: string;
+    accessToken: string;
     refreshToken?: string;
     user: Usuario;
 }

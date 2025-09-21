@@ -12,7 +12,7 @@ import AdminEstudiantes from "../views/admin/AdminEstudiantes.vue";
 import AdminDocentes from "../views/admin/AdminDocentes.vue";
 import AdminMaterias from "../views/admin/AdminMaterias.vue";
 import AdminApp from '@/views/admin/AdminApp.vue'
-import Login from '@/views/Login.vue'
+import Login from '@/views/admin/Login.vue'
 
 const routes = [
   { path: '/', component: HomeView },
@@ -27,8 +27,8 @@ const routes = [
     path: '/admin',
     component: AdminApp,
     children: [
-      { path: '', component: AdminApp }, // Dashboard por defecto
-      { path: 'login', component: Login }, // Dashboard por defecto
+      { path: '', component: AdminApp },
+      { path: 'login', component: Login },
       { path: 'dashboard', component: AdminDashboard }, // Dashboard por defecto
       { path: 'estudiantes', component: AdminEstudiantes },
       { path: 'docentes', component: AdminDocentes },

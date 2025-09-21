@@ -21,33 +21,45 @@ let DocentesService = class DocentesService {
     constructor(docenteRepository) {
         this.docenteRepository = docenteRepository;
     }
-    // Crear docente
     async create(createDocenteDto) {
-        const docente = this.docenteRepository.create(createDocenteDto);
-        return await this.docenteRepository.save(docente);
+        const docente = await this.docenteRepository.findOne({
+            where: {
+                nombres: createDocenteDto.nombres.trim(),
+                deletedAt: (0, typeorm_2.IsNull)(),
+            }
+        });
+        if (docente)
+            throw new Error('Docente ya existe con ese nombre');
+        return await this.docenteRepository.save(createDocenteDto);
     }
-    // Listar todos los docentes
     async findAll() {
-        return await this.docenteRepository.find();
+        const docentes = this.docenteRepository.find({
+            where: {
+                deletedAt: (0, typeorm_2.IsNull)()
+            }
+        });
+        return docentes;
     }
-    // Buscar un docente por id
     async findOne(id) {
-        const docente = await this.docenteRepository.findOne({ where: { id } });
+        const docente = await this.docenteRepository.findOne({
+            where: {
+                id: id,
+                deletedAt: (0, typeorm_2.IsNull)()
+            }
+        });
         if (!docente)
             throw new common_1.NotFoundException(`Docente con ID ${id} no encontrado`);
         return docente;
     }
-    // Actualizar docente
-    async update(id, updateDocenteDto) {
-        const docente = await this.findOne(id);
+    async update(updateDocenteDto) {
+        const docente = await this.findOne(updateDocenteDto.id);
         Object.assign(docente, updateDocenteDto);
-        return await this.docenteRepository.save(docente);
+        return this.docenteRepository.save(docente);
     }
-    // Eliminar docente
     async remove(id) {
-        const result = await this.docenteRepository.delete(id);
-        if (result.affected === 0)
-            throw new common_1.NotFoundException(`Docente con ID ${id} no encontrado`);
+        const docente = await this.findOne(id);
+        Object.assign(docente, { deletedAt: new Date() });
+        return this.docenteRepository.save(docente);
     }
 };
 exports.DocentesService = DocentesService;

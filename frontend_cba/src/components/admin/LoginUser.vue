@@ -26,7 +26,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import axios from "@/plugins/axios";
+import api from "@/plugins/axios";
 import { useToast } from 'primevue/usetoast';
 import Toast from 'primevue/toast';
 import InputText from 'primevue/inputtext';
@@ -50,7 +50,7 @@ const handleLogin = async (values: any) => {
     errorMessage.value = "";
 
     try {
-        const response = await axios.post(`${import.meta.env.VITE_BASE_URL_API}/auth/login`, {
+        const response = await api.post(`${import.meta.env.VITE_BASE_URL_API}/auth/login`, {
             usuario: values.username,
             clave: values.password,
         });

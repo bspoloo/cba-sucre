@@ -23,20 +23,70 @@ let ExperienciasController = class ExperienciasController {
     constructor(experienciasService) {
         this.experienciasService = experienciasService;
     }
-    create(createExperienciaDto) {
-        return this.experienciasService.create(createExperienciaDto);
+    async create(createExperienciaDto) {
+        try {
+            return this.experienciasService.create(createExperienciaDto);
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            }
+            else {
+                throw new Error('An unknown error occurred');
+            }
+        }
     }
-    findAll() {
-        return this.experienciasService.findAll();
+    async findAll() {
+        try {
+            return this.experienciasService.findAll();
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            }
+            else {
+                throw new Error('An unknown error occurred');
+            }
+        }
     }
-    findOne(id) {
-        return this.experienciasService.findOne(+id);
+    async findOne(id) {
+        try {
+            return this.experienciasService.findOne(id);
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            }
+            else {
+                throw new Error('An unknown error occurred');
+            }
+        }
     }
-    update(id, updateExperienciaDto) {
-        return this.experienciasService.update(+id, updateExperienciaDto);
+    async update(updateExperienciaDto) {
+        try {
+            return this.experienciasService.update(updateExperienciaDto);
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            }
+            else {
+                throw new Error('An unknown error occurred');
+            }
+        }
     }
-    remove(id) {
-        return this.experienciasService.remove(+id);
+    async remove(id) {
+        try {
+            return this.experienciasService.remove(id);
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            }
+            else {
+                throw new Error('An unknown error occurred');
+            }
+        }
     }
 };
 exports.ExperienciasController = ExperienciasController;
@@ -45,35 +95,34 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_experiencia_dto_1.CreateExperienciaDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ExperienciasController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ExperienciasController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ExperienciasController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
+    (0, common_1.Put)(),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_experiencia_dto_1.UpdateExperienciaDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [update_experiencia_dto_1.UpdateExperienciaDto]),
+    __metadata("design:returntype", Promise)
 ], ExperienciasController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ExperienciasController.prototype, "remove", null);
 exports.ExperienciasController = ExperienciasController = __decorate([
     (0, swagger_1.ApiBearerAuth)(),

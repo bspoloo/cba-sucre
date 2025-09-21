@@ -32,23 +32,27 @@ __decorate([
 ], CreateDocenteDto.prototype, "nombres", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNotEmpty)({ message: 'El campo nombre no debe ser vacío' }),
-    (0, class_validator_1.IsString)({ message: 'El campo nombre debe ser de tipo cadena' }),
-    (0, class_validator_1.MaxLength)(100, { message: 'El campo nombre no debe ser mayor a 100 caracteres' }),
-    (0, class_validator_1.MinLength)(2, { message: 'El campo nombre no debe ser menor a 2 caracteres' }),
+    (0, class_validator_1.IsNotEmpty)({ message: 'El campo apellido no debe ser vacío' }),
+    (0, class_validator_1.IsString)({ message: 'El campo apellido debe ser de tipo cadena' }),
+    (0, class_validator_1.MaxLength)(100, { message: 'El campo apellido no debe ser mayor a 100 caracteres' }),
+    (0, class_validator_1.MinLength)(2, { message: 'El campo apellido no debe ser menor a 2 caracteres' }),
     __metadata("design:type", String)
 ], CreateDocenteDto.prototype, "apellidos", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNotEmpty)({ message: 'El campo precio por hora no debe ser vacío' }),
-    (0, class_validator_1.IsNumber)({}, { message: 'El campo precio por hora debe ser de tipo número' }),
+    (0, class_validator_1.IsNotEmpty)({ message: 'El campo telefono por hora no debe ser vacío' }),
+    (0, class_validator_1.IsNumber)({}, { message: 'El campo telefono por hora debe ser de tipo número' }),
     __metadata("design:type", Number)
 ], CreateDocenteDto.prototype, "telefono", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNotEmpty)({ message: 'El campo nombre no debe ser vacío' }),
-    (0, class_validator_1.IsString)({ message: 'El campo nombre debe ser de tipo cadena' }),
-    (0, class_validator_1.MaxLength)(100, { message: 'El campo nombre no debe ser mayor a 100 caracteres' }),
-    (0, class_validator_1.MinLength)(2, { message: 'El campo nombre no debe ser menor a 2 caracteres' }),
+    (0, class_validator_1.IsNotEmpty)({ message: 'El campo direccion no debe ser vacío' }),
+    (0, class_validator_1.IsString)({ message: 'El campo direccion debe ser de tipo cadena' }),
+    (0, class_validator_1.MaxLength)(100, { message: 'El campo direccion no debe ser mayor a 100 caracteres' }),
+    (0, class_validator_1.MinLength)(2, { message: 'El campo direccion no debe ser menor a 2 caracteres' }),
     __metadata("design:type", String)
 ], CreateDocenteDto.prototype, "direccion", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)({}, { message: 'El campo materia_id debe ser de tipo número' }),
+    __metadata("design:type", Number)
+], CreateDocenteDto.prototype, "materia_id", void 0);

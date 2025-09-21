@@ -21,20 +21,70 @@ let MateriasController = class MateriasController {
     constructor(materiasService) {
         this.materiasService = materiasService;
     }
-    create(createMateriaDto) {
-        return this.materiasService.create(createMateriaDto);
+    async create(createMateriaDto) {
+        try {
+            return this.materiasService.create(createMateriaDto);
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            }
+            else {
+                throw new Error('An unknown error occurred');
+            }
+        }
     }
-    findAll() {
-        return this.materiasService.findAll();
+    async findAll() {
+        try {
+            return this.materiasService.findAll();
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            }
+            else {
+                throw new Error('An unknown error occurred');
+            }
+        }
     }
-    findOne(id) {
-        return this.materiasService.findOne(+id);
+    async findOne(id) {
+        try {
+            return this.materiasService.findOne(id);
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            }
+            else {
+                throw new Error('An unknown error occurred');
+            }
+        }
     }
-    update(id, updateMateriaDto) {
-        return this.materiasService.update(+id, updateMateriaDto);
+    async update(updateMateriaDto) {
+        try {
+            return this.materiasService.update(updateMateriaDto);
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            }
+            else {
+                throw new Error('An unknown error occurred');
+            }
+        }
     }
-    remove(id) {
-        return this.materiasService.remove(+id);
+    async remove(id) {
+        try {
+            return this.materiasService.remove(id);
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            }
+            else {
+                throw new Error('An unknown error occurred');
+            }
+        }
     }
 };
 exports.MateriasController = MateriasController;
@@ -43,35 +93,34 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_materia_dto_1.CreateMateriaDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], MateriasController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], MateriasController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], MateriasController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Put)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
+    (0, common_1.Put)(),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_materia_dto_1.UpdateMateriaDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [update_materia_dto_1.UpdateMateriaDto]),
+    __metadata("design:returntype", Promise)
 ], MateriasController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], MateriasController.prototype, "remove", null);
 exports.MateriasController = MateriasController = __decorate([
     (0, common_1.Controller)('materias'),

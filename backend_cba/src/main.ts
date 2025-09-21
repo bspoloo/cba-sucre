@@ -58,7 +58,7 @@ async function bootstrap() {
   const port = process.env.PORT || 3300;
   await app.listen(port);
 
-  console.log(`🚀 Servidor corriendo en: ${process.env.FRONTEND_URL}:${port}`);
-  console.log(`📄 Documentación API: ${process.env.FRONTEND_URL}:${port}/api-docs`);
+  console.log(`🚀 Servidor corriendo en: ${process.env.BASE_URL}:${port}`);
+  console.log(`📄 Documentación API: ${process.env.BASE_URL}:${port}/api-docs`);
 }
 bootstrap();

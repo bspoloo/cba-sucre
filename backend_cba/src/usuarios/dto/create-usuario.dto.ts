@@ -21,5 +21,5 @@ export class CreateUsuarioDto {
   @IsString({ message: 'El campo tipo Usuario debe tener el formato correcto' })
   @MaxLength(15, { message: 'El campo tipo Usuario no debe ser mayor a 15 caracteres' })
   @MinLength(3, { message: 'El campo tipo Usuario no debe ser menor a 3 caracteres' })
-  readonly rol!: string;
+  readonly role!: string;
 }

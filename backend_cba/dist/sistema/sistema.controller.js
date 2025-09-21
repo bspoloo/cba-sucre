@@ -22,7 +22,17 @@ let SistemaController = class SistemaController {
         this.authService = authService;
     }
     async login(credentials) {
-        return this.authService.login(credentials);
+        try {
+            return this.authService.login(credentials);
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            }
+            else {
+                throw new Error('An unknown error occurred');
+            }
+        }
     }
 };
 exports.SistemaController = SistemaController;

@@ -2,7 +2,7 @@
 import { defineStore } from 'pinia'
 import http from '@/plugins/axios'
 import router from '@/router'
-import axios from '@/plugins/axios'
+import api from '@/plugins/axios'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -15,11 +15,10 @@ export const useAuthStore = defineStore('auth', {
     isLoggedIn: (state) => !!state.accessToken
   },
   actions: {
-    async login(usuario: string, clave: string) {
+    async login(usuario: string, clave: string) : Promise<{message: string, success: boolean}>{
       try {
-        const response = await http.post('auth/login', { usuario, clave })
-        const { accessToken, refreshToken, user } = response.data
-
+        const response = await api.post(`${import.meta.env.VITE_BASE_URL_API}/auth/login`, { usuario, clave })
+        const { accessToken, refreshToken, user } = response.data        
         this.user = user
         this.accessToken = accessToken
         this.refreshToken = refreshToken
@@ -29,14 +28,22 @@ export const useAuthStore = defineStore('auth', {
         localStorage.setItem('refreshToken', refreshToken)
 
         router.push(this.returnUrl || '/')
+        return {
+          message: 'Loggeo exitoso',
+          success: true
+        };
       } catch (err) {
         console.error('Error en login', err)
-        throw err
+        // throw err
+        return {
+          message: `Error en inicio de sesion ${typeof err === 'object' && err !== null && 'message' in err ? (err as { message: string }).message : String(err)}`,
+          success: false
+        };
       }
     },
     async logout() {
       try {
-        await axios.post("/auth/logout");
+        await api.post("/auth/logout");
       } catch (e) {
         console.warn("Error al cerrar sesión", e);
       } finally {

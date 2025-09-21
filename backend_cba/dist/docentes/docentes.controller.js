@@ -21,20 +21,70 @@ let DocentesController = class DocentesController {
     constructor(docentesService) {
         this.docentesService = docentesService;
     }
-    create(createDocenteDto) {
-        return this.docentesService.create(createDocenteDto);
+    async create(createDocenteDto) {
+        try {
+            return this.docentesService.create(createDocenteDto);
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            }
+            else {
+                throw new Error('An unknown error occurred');
+            }
+        }
     }
-    findAll() {
-        return this.docentesService.findAll();
+    async findAll() {
+        try {
+            return this.docentesService.findAll();
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            }
+            else {
+                throw new Error('An unknown error occurred');
+            }
+        }
     }
-    findOne(id) {
-        return this.docentesService.findOne(+id);
+    async findOne(id) {
+        try {
+            return this.docentesService.findOne(id);
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            }
+            else {
+                throw new Error('An unknown error occurred');
+            }
+        }
     }
-    update(id, updateDocenteDto) {
-        return this.docentesService.update(+id, updateDocenteDto);
+    async update(id, updateDocenteDto) {
+        try {
+            return this.docentesService.update(updateDocenteDto);
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            }
+            else {
+                throw new Error('An unknown error occurred');
+            }
+        }
     }
-    remove(id) {
-        return this.docentesService.remove(+id);
+    async remove(id) {
+        try {
+            return this.docentesService.remove(id);
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            }
+            else {
+                throw new Error('An unknown error occurred');
+            }
+        }
     }
 };
 exports.DocentesController = DocentesController;
@@ -43,20 +93,20 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_docente_dto_1.CreateDocenteDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], DocentesController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], DocentesController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], DocentesController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Put)(':id'),
@@ -64,14 +114,14 @@ __decorate([
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_docente_dto_1.UpdateDocenteDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], DocentesController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], DocentesController.prototype, "remove", null);
 exports.DocentesController = DocentesController = __decorate([
     (0, common_1.Controller)('docentes'),

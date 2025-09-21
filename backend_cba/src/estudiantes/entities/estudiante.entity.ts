@@ -1,9 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { AuditableEntity } from '@/config/auditable-entity.class';
+import { Materia } from '@/materias/entities/materia.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany, JoinTable, PrimaryColumn, Generated } from 'typeorm';
 
 @Entity('estudiantes')
-export class Estudiante {
-  @PrimaryGeneratedColumn()
-  id!: number;
+export class Estudiante extends AuditableEntity {
+  @PrimaryColumn('char', { length: 36 })
+  @Generated('uuid')
+  id!: string;
 
   @Column('int', { unique: true, nullable: false })
   ci!: number;
@@ -15,5 +18,9 @@ export class Estudiante {
   apellidos!: string;
 
   @Column('varchar', { length: 20, nullable: false })
-  telefono!: string; // <-- string para que coincida con DTO
+  telefono!: string;
+
+  @ManyToMany(() => Materia, materia => materia.estudiantes)
+  @JoinTable({ name: 'estudiante_materia' })
+  materias!: Materia[];
 }

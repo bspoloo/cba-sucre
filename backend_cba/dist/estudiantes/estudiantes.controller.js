@@ -21,20 +21,71 @@ let EstudiantesController = class EstudiantesController {
     constructor(estudiantesService) {
         this.estudiantesService = estudiantesService;
     }
-    create(createEstudianteDto) {
-        return this.estudiantesService.create(createEstudianteDto);
+    async create(createEstudianteDto) {
+        try {
+            return this.estudiantesService.create(createEstudianteDto);
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            }
+            else {
+                throw new Error('An unknown error occurred');
+            }
+        }
     }
-    findAll() {
-        return this.estudiantesService.findAll();
+    async findAll() {
+        try {
+            return this.estudiantesService.findAll();
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            }
+            else {
+                throw new Error('An unknown error occurred');
+            }
+        }
     }
-    findOne(id) {
-        return this.estudiantesService.findOne(+id);
+    async findOne(id) {
+        try {
+            return this.estudiantesService.findOne(id);
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            }
+            else {
+                throw new Error('An unknown error occurred');
+            }
+        }
     }
-    update(id, updateEstudianteDto) {
-        return this.estudiantesService.update(+id, updateEstudianteDto);
+    async update(updateEstudianteDto) {
+        try {
+            console.log(updateEstudianteDto);
+            return this.estudiantesService.update(updateEstudianteDto);
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            }
+            else {
+                throw new Error('An unknown error occurred');
+            }
+        }
     }
-    remove(id) {
-        return this.estudiantesService.remove(+id);
+    async remove(id) {
+        try {
+            return this.estudiantesService.remove(id);
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            }
+            else {
+                throw new Error('An unknown error occurred');
+            }
+        }
     }
 };
 exports.EstudiantesController = EstudiantesController;
@@ -43,35 +94,34 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_estudiante_dto_1.CreateEstudianteDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], EstudiantesController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], EstudiantesController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], EstudiantesController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Put)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
+    (0, common_1.Put)(),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_estudiante_dto_1.UpdateEstudianteDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [update_estudiante_dto_1.UpdateEstudianteDto]),
+    __metadata("design:returntype", Promise)
 ], EstudiantesController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], EstudiantesController.prototype, "remove", null);
 exports.EstudiantesController = EstudiantesController = __decorate([
     (0, common_1.Controller)('estudiantes'),
