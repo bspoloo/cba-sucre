@@ -1,12 +1,14 @@
-import { Column, Entity, PrimaryGeneratedColumn, JoinColumn, ManyToOne, ManyToMany, JoinTable, CreateDateColumn, OneToOne } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, JoinColumn, ManyToOne, ManyToMany, JoinTable, CreateDateColumn, OneToOne, PrimaryColumn, Generated } from "typeorm";
 
 import { Materia } from '../../materias/entities/materia.entity'; // Adjusted relative path
 import { Usuario } from '../../usuarios/entities/usuario.entity';
+import { AuditableEntity } from "@/config/auditable-entity.class";
 
 @Entity('docentes')
-export class Docente {
-  @PrimaryGeneratedColumn()
-  id!: number;
+export class Docente extends AuditableEntity {
+  @PrimaryColumn('char', { length: 36 })
+  @Generated('uuid')
+  id!: string;
 
   @Column('int', { nullable: false })
   ci!: number;
@@ -23,15 +25,12 @@ export class Docente {
   @Column('varchar', { length: 100, nullable: false })
   direccion!: string;
 
-  // Relación: muchos docentes pueden impartir una misma materia
   @ManyToOne(() => Materia, materia => materia.docentes)
   materia!: Materia;
 
   @OneToOne(() => Usuario, (usuario) => usuario.docente)
-  @JoinColumn({ name: 'id_usuario' })  // Aquí se crea la columna id_usuario en la tabla docentes
+  @JoinColumn({ name: 'id_usuario' })
   usuario!: Usuario;
-  
-  
 }
 
 

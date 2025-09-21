@@ -6,7 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Experiencia])],  // Asegúrate de que la entidad sea registrada aquí
+  imports: [TypeOrmModule.forFeature([Experiencia])],
   providers: [ExperienciasService],
   controllers: [ExperienciasController],
 })

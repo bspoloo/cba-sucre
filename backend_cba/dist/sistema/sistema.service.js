@@ -56,43 +56,46 @@ let SistemaService = class SistemaService {
     constructor(sistemaRepository) {
         this.sistemaRepository = sistemaRepository;
     }
-    // Crear usuario con contraseña cifrada
     async create(createSistemaDto) {
         const hashedPassword = await bcrypt.hash(createSistemaDto.password, 10);
         const nuevoUsuario = this.sistemaRepository.create(Object.assign(Object.assign({}, createSistemaDto), { password: hashedPassword }));
         return this.sistemaRepository.save(nuevoUsuario);
     }
-    // Listar todos los usuarios
-    findAll() {
+    async findAll() {
         return this.sistemaRepository.find();
     }
-    // Buscar un usuario por ID
-    findOne(id) {
-        return this.sistemaRepository.findOne({ where: { id } });
+    async findOne(id) {
+        const system = await this.sistemaRepository.findOne({
+            where: {
+                id: id,
+                deletedAt: (0, typeorm_2.IsNull)()
+            }
+        });
+        if (!system)
+            throw new common_1.NotFoundException('Sistema inexistente');
+        return system;
     }
-    // Actualizar usuario (si cambia la contraseña, la encripta)
-    async update(id, updateSistemaDto) {
-        const updatedData = Object.assign({}, updateSistemaDto);
+    async update(updateSistemaDto) {
+        const system = await this.findOne(updateSistemaDto.id);
         if (updateSistemaDto.password) {
-            updatedData.password = await bcrypt.hash(updateSistemaDto.password, 10);
+            system.password = await bcrypt.hash(updateSistemaDto.password, 10);
         }
-        await this.sistemaRepository.update(id, updatedData);
-        return this.findOne(id);
+        Object.assign(system, updateSistemaDto);
+        return this.sistemaRepository.save(system);
     }
-    // Actualizar contraseña sin modificar directamente el DTO
     async updatePassword(id, password) {
         const hashedPassword = await bcrypt.hash(password, 10);
         await this.sistemaRepository.update(id, { password: hashedPassword });
+        return {
+            message: 'contraseña acutalizada correctamente',
+            success: true
+        };
     }
-    // Eliminar usuario
     async remove(id) {
         const user = await this.findOne(id);
-        if (!user) {
-            throw new Error(`Usuario con ID ${id} no encontrado`);
-        }
-        return this.sistemaRepository.remove(user);
+        Object.assign(user, { deletedAt: new Date() });
+        return this.sistemaRepository.save(user);
     }
-    // LOGIN: Validar usuario y devolver token
     async login(username, password) {
         const user = await this.sistemaRepository.findOne({ where: { username } });
         if (!user || !user.password) {
@@ -102,8 +105,7 @@ let SistemaService = class SistemaService {
         if (!isMatch) {
             throw new common_1.UnauthorizedException('Usuario o contraseña incorrectos');
         }
-        const token = jwt.sign({ id: user.id, username: user.username }, process.env.JWT_SECRET || 'secreto123', // Puedes mejorar esto usando ConfigService
-        { expiresIn: '1h' });
+        const token = jwt.sign({ id: user.id, username: user.username }, process.env.JWT_SECRET || 'secreto123', { expiresIn: '1h' });
         return { token };
     }
 };

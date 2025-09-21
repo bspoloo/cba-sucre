@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import axios from '@/plugins/axios'
+import api from '@/plugins/axios'
 import type { Estudiante } from '@/interfaces/estudiante.interface'
 
 // Lista de estudiantes
@@ -12,7 +12,7 @@ const nuevoEstudiante = ref<Partial<Estudiante>>({})
 // Función para cargar estudiantes desde backend
 const cargarEstudiantes = async () => {
   try {
-    const { data } = await axios.get(`${import.meta.env.VITE_BASE_URL_API}/estudiantes`)
+    const { data } = await api.get(`${import.meta.env.VITE_BASE_URL_API}/estudiantes`)
     estudiantes.value = data
   } catch (error) {
     console.error('Error al cargar estudiantes:', error)
@@ -27,7 +27,7 @@ const agregarEstudiante = async () => {
   }
   try {
     
-    const { data } = await axios.post(`${import.meta.env.VITE_BASE_URL_API}/estudiantes`, nuevoEstudiante.value, )
+    const { data } = await api.post(`${import.meta.env.VITE_BASE_URL_API}/estudiantes`, nuevoEstudiante.value, )
     estudiantes.value.push(data)
     nuevoEstudiante.value = {}
   } catch (error) {
@@ -39,7 +39,7 @@ const agregarEstudiante = async () => {
 const eliminarEstudiante = async (id: number) => {
   if (!confirm('¿Estás seguro de eliminar este estudiante?')) return
   try {
-    await axios.delete(`/estudiantes/${id}`)
+    await api.delete(`/estudiantes/${id}`)
     estudiantes.value = estudiantes.value.filter(e => e.id !== id)
   } catch (error) {
     console.error('Error al eliminar estudiante:', error)

@@ -19,6 +19,8 @@ const materias_module_1 = require("./materias/materias.module");
 const sistema_module_1 = require("./sistema/sistema.module");
 const usuarios_module_1 = require("./usuarios/usuarios.module");
 const auth_module_1 = require("./auth/auth.module");
+const roles_module_1 = require("./roles/roles.module");
+const files_module_1 = require("./files/files.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -34,8 +36,8 @@ exports.AppModule = AppModule = __decorate([
                 password: process.env.DB_PASSWORD,
                 database: process.env.DB_NAME,
                 autoLoadEntities: true,
-                synchronize: true, // sincroniza entidades
-                dropSchema: true, // ⚠️ elimina todas las tablas existentes al iniciar
+                synchronize: true,
+                dropSchema: false,
                 logging: true,
             }),
             experiencias_module_1.ExperienciasModule,
@@ -45,6 +47,8 @@ exports.AppModule = AppModule = __decorate([
             sistema_module_1.SistemaModule,
             usuarios_module_1.UsuariosModule,
             auth_module_1.AuthModule,
+            roles_module_1.RolesModule,
+            files_module_1.FilesModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

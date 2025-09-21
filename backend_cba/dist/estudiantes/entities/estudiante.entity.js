@@ -10,13 +10,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Estudiante = void 0;
+const auditable_entity_class_1 = require("../../config/auditable-entity.class");
+const materia_entity_1 = require("../../materias/entities/materia.entity");
 const typeorm_1 = require("typeorm");
-let Estudiante = class Estudiante {
+let Estudiante = class Estudiante extends auditable_entity_class_1.AuditableEntity {
 };
 exports.Estudiante = Estudiante;
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)(),
-    __metadata("design:type", Number)
+    (0, typeorm_1.PrimaryColumn)('char', { length: 36 }),
+    (0, typeorm_1.Generated)('uuid'),
+    __metadata("design:type", String)
 ], Estudiante.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)('int', { unique: true, nullable: false }),
@@ -34,6 +37,11 @@ __decorate([
     (0, typeorm_1.Column)('varchar', { length: 20, nullable: false }),
     __metadata("design:type", String)
 ], Estudiante.prototype, "telefono", void 0);
+__decorate([
+    (0, typeorm_1.ManyToMany)(() => materia_entity_1.Materia, materia => materia.estudiantes),
+    (0, typeorm_1.JoinTable)({ name: 'estudiante_materia' }),
+    __metadata("design:type", Array)
+], Estudiante.prototype, "materias", void 0);
 exports.Estudiante = Estudiante = __decorate([
     (0, typeorm_1.Entity)('estudiantes')
 ], Estudiante);

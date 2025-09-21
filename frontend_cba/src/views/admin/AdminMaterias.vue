@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import axios from '@/plugins/axios'
+import api from '@/plugins/axios'
 import type { Materia } from '@/interfaces/materia.interface'
 
 const materias = ref<Materia[]>([])
@@ -8,7 +8,7 @@ const nuevaMateria = ref<Partial<Materia>>({})
 
 const cargarMaterias = async () => {
   try {
-    const { data } = await axios.get('/materias')
+    const { data } = await api.get('/materias')
     materias.value = data
   } catch (error) {
     console.error(error)
@@ -17,7 +17,7 @@ const cargarMaterias = async () => {
 
 const agregarMateria = async () => {
   try {
-    const { data } = await axios.post('/materias', nuevaMateria.value)
+    const { data } = await api.post('/materias', nuevaMateria.value)
     materias.value.push(data)
     nuevaMateria.value = {}
   } catch (error) {
@@ -27,7 +27,7 @@ const agregarMateria = async () => {
 
 const eliminarMateria = async (id: number) => {
   try {
-    await axios.delete(`/materias/${id}`)
+    await api.delete(`/materias/${id}`)
     materias.value = materias.value.filter(m => m.id !== id)
   } catch (error) {
     console.error(error)

@@ -13,12 +13,14 @@ exports.Docente = void 0;
 const typeorm_1 = require("typeorm");
 const materia_entity_1 = require("../../materias/entities/materia.entity"); // Adjusted relative path
 const usuario_entity_1 = require("../../usuarios/entities/usuario.entity");
-let Docente = class Docente {
+const auditable_entity_class_1 = require("../../config/auditable-entity.class");
+let Docente = class Docente extends auditable_entity_class_1.AuditableEntity {
 };
 exports.Docente = Docente;
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)(),
-    __metadata("design:type", Number)
+    (0, typeorm_1.PrimaryColumn)('char', { length: 36 }),
+    (0, typeorm_1.Generated)('uuid'),
+    __metadata("design:type", String)
 ], Docente.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)('int', { nullable: false }),
@@ -46,8 +48,7 @@ __decorate([
 ], Docente.prototype, "materia", void 0);
 __decorate([
     (0, typeorm_1.OneToOne)(() => usuario_entity_1.Usuario, (usuario) => usuario.docente),
-    (0, typeorm_1.JoinColumn)({ name: 'id_usuario' }) // Aquí se crea la columna id_usuario en la tabla docentes
-    ,
+    (0, typeorm_1.JoinColumn)({ name: 'id_usuario' }),
     __metadata("design:type", usuario_entity_1.Usuario)
 ], Docente.prototype, "usuario", void 0);
 exports.Docente = Docente = __decorate([

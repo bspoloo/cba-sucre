@@ -20,5 +20,6 @@ exports.MateriasModule = MateriasModule = __decorate([
         imports: [typeorm_1.TypeOrmModule.forFeature([materia_entity_1.Materia])],
         controllers: [materias_controller_1.MateriasController],
         providers: [materias_service_1.MateriasService],
+        exports: [materias_service_1.MateriasService],
     })
 ], MateriasModule);

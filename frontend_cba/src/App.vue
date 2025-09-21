@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
 import { RouterView } from 'vue-router'  
 import './assets/js/main.js'
@@ -8,6 +7,7 @@ import MainFooter from '@/components/MainFooter.vue'
 
 <template>
   <main>
+    <Toast />
     <MainHeader />
     <RouterView />
     <MainFooter />
@@ -18,4 +18,3 @@ import MainFooter from '@/components/MainFooter.vue'
 @import '@/assets/css/bootstrap.min.css';
 @import '@/assets/css/style.css';
 </style>
-*

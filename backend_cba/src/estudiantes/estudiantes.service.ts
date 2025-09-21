@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { Estudiante } from './entities/estudiante.entity';
 import { CreateEstudianteDto } from './dto/create-estudiante.dto';
 import { UpdateEstudianteDto } from './dto/update-estudiante.dto';
@@ -10,37 +10,49 @@ export class EstudiantesService {
   constructor(
     @InjectRepository(Estudiante)
     private readonly estudianteRepository: Repository<Estudiante>,
-  ) {}
+  ) { }
 
-  // Crear estudiante
-  async create(createEstudianteDto: CreateEstudianteDto): Promise<Estudiante> {
-    const estudiante = this.estudianteRepository.create(createEstudianteDto);
-    return await this.estudianteRepository.save(estudiante);
+  public async create(createEstudianteDto: CreateEstudianteDto): Promise<Estudiante> {
+    const estudiante = await this.estudianteRepository.findOne({
+      where: {
+        nombres: createEstudianteDto.nombres.trim(),
+        deletedAt: IsNull(),
+      }
+    });
+    if (estudiante) throw new Error('Materia ya existe con ese nombre');
+    return this.estudianteRepository.save(createEstudianteDto);
   }
 
-  // Listar todos los estudiantes
-  async findAll(): Promise<Estudiante[]> {
-    return await this.estudianteRepository.find();
+  public async findAll(): Promise<Estudiante[]> {
+    const estudiantes = this.estudianteRepository.find({
+      where: {
+        deletedAt: IsNull()
+      }
+    });
+
+    return estudiantes;
   }
 
-  // Buscar un estudiante por id
-  async findOne(id: number): Promise<Estudiante> {
-    const estudiante = await this.estudianteRepository.findOne({ where: { id } });
+  public async findOne(id: string): Promise<Estudiante> {
+    const estudiante = await this.estudianteRepository.findOne({
+      where: {
+        id: id,
+        deletedAt: IsNull()
+      }
+    });
     if (!estudiante) throw new NotFoundException(`Estudiante con ID ${id} no encontrado`);
     return estudiante;
   }
 
-  // Actualizar estudiante
-  async update(id: number, updateEstudianteDto: UpdateEstudianteDto): Promise<Estudiante> {
-    const estudiante = await this.findOne(id);
+  public async update(updateEstudianteDto: UpdateEstudianteDto): Promise<Estudiante> {
+    const estudiante = await this.findOne(updateEstudianteDto.id);
     Object.assign(estudiante, updateEstudianteDto);
     return await this.estudianteRepository.save(estudiante);
   }
 
-  // Eliminar estudiante
-  async remove(id: number): Promise<void> {
-    const result = await this.estudianteRepository.delete(id);
-    if (result.affected === 0)
-      throw new NotFoundException(`Estudiante con ID ${id} no encontrado`);
+  public async remove(id: string): Promise<Estudiante> {
+    const estudiante = await this.findOne(id);
+    Object.assign(estudiante, { deletedAt: new Date() });
+    return this.estudianteRepository.save(estudiante);
   }
 }

@@ -10,6 +10,8 @@ import { MateriasModule } from './materias/materias.module';
 import { SistemaModule } from './sistema/sistema.module';
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { AuthModule } from './auth/auth.module';
+import { RolesModule } from './roles/roles.module';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -22,8 +24,8 @@ import { AuthModule } from './auth/auth.module';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       autoLoadEntities: true,
-      synchronize: true,   // sincroniza entidades
-      dropSchema: true,    // ⚠️ elimina todas las tablas existentes al iniciar
+      synchronize: true,
+      dropSchema: false,
       logging: true,
     }),
     ExperienciasModule,
@@ -33,6 +35,8 @@ import { AuthModule } from './auth/auth.module';
     SistemaModule,
     UsuariosModule,
     AuthModule,
+    RolesModule,
+    FilesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -11,14 +11,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Materia = void 0;
 const typeorm_1 = require("typeorm");
-// import { Estudiante } from '../../estudiantes/entities/estudiante.entity';
 const docente_entity_1 = require("../../docentes/entities/docente.entity");
-let Materia = class Materia {
+const estudiante_entity_1 = require("../../estudiantes/entities/estudiante.entity");
+const auditable_entity_class_1 = require("../../config/auditable-entity.class");
+let Materia = class Materia extends auditable_entity_class_1.AuditableEntity {
 };
 exports.Materia = Materia;
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)(),
-    __metadata("design:type", Number)
+    (0, typeorm_1.PrimaryColumn)('char', { length: 36 }),
+    (0, typeorm_1.Generated)('uuid'),
+    __metadata("design:type", String)
 ], Materia.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)('varchar', { length: 255, nullable: false }),
@@ -29,10 +31,13 @@ __decorate([
     __metadata("design:type", String)
 ], Materia.prototype, "aula", void 0);
 __decorate([
-    (0, typeorm_1.Column)('time', { nullable: false }) // Asegúrate de que el tipo sea correcto
-    ,
+    (0, typeorm_1.Column)('time', { nullable: false }),
     __metadata("design:type", String)
 ], Materia.prototype, "hora", void 0);
+__decorate([
+    (0, typeorm_1.ManyToMany)(() => estudiante_entity_1.Estudiante, (estudiante) => estudiante.materias),
+    __metadata("design:type", Array)
+], Materia.prototype, "estudiantes", void 0);
 __decorate([
     (0, typeorm_1.OneToMany)(() => docente_entity_1.Docente, docente => docente.materia),
     __metadata("design:type", Array)

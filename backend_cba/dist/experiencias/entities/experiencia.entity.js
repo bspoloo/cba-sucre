@@ -10,13 +10,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Experiencia = void 0;
+const auditable_entity_class_1 = require("../../config/auditable-entity.class");
 const typeorm_1 = require("typeorm");
-let Experiencia = class Experiencia {
+let Experiencia = class Experiencia extends auditable_entity_class_1.AuditableEntity {
 };
 exports.Experiencia = Experiencia;
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)(),
-    __metadata("design:type", Number)
+    (0, typeorm_1.PrimaryColumn)('char', { length: 36 }),
+    (0, typeorm_1.Generated)('uuid'),
+    __metadata("design:type", String)
 ], Experiencia.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)('varchar', { length: 100, nullable: false }),
@@ -27,9 +29,13 @@ __decorate([
     __metadata("design:type", String)
 ], Experiencia.prototype, "descripcion", void 0);
 __decorate([
+    (0, typeorm_1.Column)('text'),
+    __metadata("design:type", String)
+], Experiencia.prototype, "url_image", void 0);
+__decorate([
     (0, typeorm_1.Column)('date', { name: 'fecha' }),
     __metadata("design:type", Date)
 ], Experiencia.prototype, "fecha", void 0);
 exports.Experiencia = Experiencia = __decorate([
-    (0, typeorm_1.Entity)('estudiantes')
+    (0, typeorm_1.Entity)('experiencias')
 ], Experiencia);

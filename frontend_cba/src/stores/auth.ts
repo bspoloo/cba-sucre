@@ -1,5 +1,5 @@
 import type { Usuario } from '@/interfaces/usuario.interface';
-import axios from '@/plugins/axios';
+import api from '@/plugins/axios';
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import router from '@/router'
@@ -23,7 +23,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function refresh(): Promise<boolean> {
     try {
-      const res = await axios.get("/auth/refresh");
+      const res = await api.get("/auth/refresh");
       if (res.data?.acccessToken) {
         setAuth(res.data.acccessToken, res.data.user ?? null);
         return true;
@@ -36,7 +36,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function logout() {
     try {
-      await axios.post("/auth/logout"); // opcional si backend invalida refresh token
+      await api.post("/auth/logout"); // opcional si backend invalida refresh token
     } catch (e) {
       console.warn("Error al cerrar sesión", e);
     } finally {

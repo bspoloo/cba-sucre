@@ -38,4 +38,4 @@ __decorate([
     (0, class_validator_1.MaxLength)(15, { message: 'El campo tipo Usuario no debe ser mayor a 15 caracteres' }),
     (0, class_validator_1.MinLength)(3, { message: 'El campo tipo Usuario no debe ser menor a 3 caracteres' }),
     __metadata("design:type", String)
-], CreateUsuarioDto.prototype, "rol", void 0);
+], CreateUsuarioDto.prototype, "role", void 0);
