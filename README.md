@@ -63,6 +63,7 @@ npm run start:dev
 ### Loggin
 
 Por defecto el usuario y contraseña sera admin - admin:
+
 ![alt text](image.png)
 
 ### Acceso al Admin
