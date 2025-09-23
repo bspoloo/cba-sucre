@@ -12,10 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UpdateUsuarioDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const create_usuario_dto_1 = require("./create-usuario.dto");
+const class_validator_1 = require("class-validator");
 class UpdateUsuarioDto extends (0, swagger_1.PartialType)(create_usuario_dto_1.CreateUsuarioDto) {
 }
 exports.UpdateUsuarioDto = UpdateUsuarioDto;
 __decorate([
     (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsUUID)('4', { message: 'El id debe ser un UUID válido' }),
+    (0, class_validator_1.IsNotEmpty)({ message: 'El id es obligatorio' }),
     __metadata("design:type", String)
 ], UpdateUsuarioDto.prototype, "id", void 0);

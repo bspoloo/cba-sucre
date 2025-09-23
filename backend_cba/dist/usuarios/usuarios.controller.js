@@ -50,9 +50,9 @@ let UsuariosController = class UsuariosController {
             }
         }
     }
-    async findOne(id) {
+    async findAllWithoutRelatins() {
         try {
-            return this.usuariosService.findOne(id);
+            return this.usuariosService.findAllWithoutRelations();
         }
         catch (error) {
             if (error instanceof Error) {
@@ -106,12 +106,11 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsuariosController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Get)('/no-relations'),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], UsuariosController.prototype, "findOne", null);
+], UsuariosController.prototype, "findAllWithoutRelatins", null);
 __decorate([
     (0, common_1.Put)(),
     __param(0, (0, common_1.Body)()),

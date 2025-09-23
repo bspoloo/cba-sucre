@@ -4,30 +4,56 @@ import { IsNull, Repository } from 'typeorm';
 import { Docente } from './entities/docente.entity';
 import { CreateDocenteDto } from './dto/create-docente.dto';
 import { UpdateDocenteDto } from './dto/update-docente.dto';
+import { UsuariosService } from '@/usuarios/usuarios.service';
+import { MateriasService } from '@/materias/materias.service';
+import { Usuario } from '@/usuarios/entities/usuario.entity';
 
 @Injectable()
 export class DocentesService {
   constructor(
     @InjectRepository(Docente)
     private readonly docenteRepository: Repository<Docente>,
+    private readonly userService: UsuariosService,
+    private readonly materiaService: MateriasService,
   ) { }
 
   public async create(createDocenteDto: CreateDocenteDto): Promise<Docente> {
-    const docente = await this.docenteRepository.findOne({
+    const docenteExistente = await this.docenteRepository.findOne({
       where: {
         nombres: createDocenteDto.nombres.trim(),
         deletedAt: IsNull(),
       }
     });
-    if (docente) throw new Error('Docente ya existe con ese nombre');
-    return await this.docenteRepository.save(createDocenteDto);
+
+    if (docenteExistente) {
+      throw new Error('Docente ya existe con ese nombre');
+    }
+
+    const usuario = await this.userService.findOne(createDocenteDto.usuario_id);
+    const materia = await this.materiaService.findOne(createDocenteDto.materia_id);
+
+    const docente = this.docenteRepository.create({
+      ...createDocenteDto,
+      materia,
+      usuario
+    });
+    const docenteSaved = await this.docenteRepository.save(docente);
+    const usuarioUpdated = await this.userService.update({
+      id: usuario.id,
+      docenteId: docenteSaved.id,
+      role: usuario.role?.name,
+    });
+    docenteSaved.usuario = usuarioUpdated;
+    return await this.docenteRepository.save(docenteSaved);
   }
+
 
   public async findAll(): Promise<Docente[]> {
     const docentes = this.docenteRepository.find({
       where: {
         deletedAt: IsNull()
-      }
+      },
+      relations: ['usuario', 'materia']
     });
     return docentes;
   }

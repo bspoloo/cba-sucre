@@ -12,14 +12,22 @@ const typeorm_1 = require("@nestjs/typeorm");
 const docentes_service_1 = require("./docentes.service");
 const docentes_controller_1 = require("./docentes.controller");
 const docente_entity_1 = require("./entities/docente.entity");
+const usuario_entity_1 = require("../usuarios/entities/usuario.entity");
+const materia_entity_1 = require("../materias/entities/materia.entity");
+const usuarios_module_1 = require("../usuarios/usuarios.module");
+const materias_module_1 = require("../materias/materias.module");
 let DocentesModule = class DocentesModule {
 };
 exports.DocentesModule = DocentesModule;
 exports.DocentesModule = DocentesModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([docente_entity_1.Docente])], // Registrar el repositorio de Docente
+        imports: [
+            typeorm_1.TypeOrmModule.forFeature([docente_entity_1.Docente, usuario_entity_1.Usuario, materia_entity_1.Materia]),
+            usuarios_module_1.UsuariosModule,
+            materias_module_1.MateriasModule
+        ],
         controllers: [docentes_controller_1.DocentesController],
         providers: [docentes_service_1.DocentesService],
-        exports: [docentes_service_1.DocentesService], // Exportar el servicio si es necesario en otros módulos
+        exports: [docentes_service_1.DocentesService],
     })
 ], DocentesModule);

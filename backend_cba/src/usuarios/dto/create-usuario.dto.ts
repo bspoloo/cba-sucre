@@ -22,4 +22,11 @@ export class CreateUsuarioDto {
   @MaxLength(15, { message: 'El campo tipo Usuario no debe ser mayor a 15 caracteres' })
   @MinLength(3, { message: 'El campo tipo Usuario no debe ser menor a 3 caracteres' })
   readonly role!: string;
+
+  @ApiProperty()
+  @IsNotEmpty({ message: 'El campo tipo docenteId no debe ser vacío' })
+  @IsString({ message: 'El campo tipo docenteId debe tener el formato correcto' })
+  @MaxLength(15, { message: 'El campo tipo docenteId no debe ser mayor a 15 caracteres' })
+  @MinLength(3, { message: 'El campo tipo docenteId no debe ser menor a 3 caracteres' })
+  readonly docenteId!: string;
 }

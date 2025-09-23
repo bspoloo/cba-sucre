@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import http from '@/plugins/axios'
 import router from '@/router'
 import api from '@/plugins/axios'
-import type { Usuario } from '@/interfaces/usuario.interface'
+import type { Usuario } from '@/interfaces/usuario/usuario.interface'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({

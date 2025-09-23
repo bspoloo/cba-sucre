@@ -42,10 +42,10 @@ export class UsuariosController {
     }
   }
 
-  @Get(':id')
-  public async findOne(@Param('id') id: string): Promise<Usuario> {
+  @Get('/no-relations')
+  public async findAllWithoutRelatins(): Promise<Usuario[]> {
     try {
-      return this.usuariosService.findOne(id);
+      return this.usuariosService.findAllWithoutRelations();
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(error.message);
@@ -54,6 +54,8 @@ export class UsuariosController {
       }
     }
   }
+
+
 
   @Put()
   public async update(@Body() updateUsuarioDto: UpdateUsuarioDto): Promise<Usuario> {

@@ -12,10 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UpdateRoleDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const create_role_dto_1 = require("./create-role.dto");
+const class_validator_1 = require("class-validator");
 class UpdateRoleDto extends (0, swagger_1.PartialType)(create_role_dto_1.CreateRoleDto) {
 }
 exports.UpdateRoleDto = UpdateRoleDto;
 __decorate([
     (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsUUID)('4', { message: 'El id debe ser un UUID válido' }),
+    (0, class_validator_1.IsNotEmpty)({ message: 'El id es obligatorio' }),
     __metadata("design:type", String)
 ], UpdateRoleDto.prototype, "id", void 0);
