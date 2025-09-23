@@ -1,39 +1,80 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Put } from '@nestjs/common';
 import { ExperienciasService } from './experiencias.service';
 import { CreateExperienciaDto } from './dto/create-experiencia.dto';
 import { UpdateExperienciaDto } from './dto/update-experiencia.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { Experiencia } from './entities/experiencia.entity';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @ApiTags('experiencias')
 @Controller('experiencias')
 export class ExperienciasController {
-  constructor(private readonly experienciasService: ExperienciasService) {}
+  constructor(private readonly experienciasService: ExperienciasService) { }
 
   @Post()
-  create(@Body() createExperienciaDto: CreateExperienciaDto) {
-    return this.experienciasService.create(createExperienciaDto);
+  public async create(@Body() createExperienciaDto: CreateExperienciaDto): Promise<Experiencia> {
+    try {
+      return this.experienciasService.create(createExperienciaDto);
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      } else {
+        throw new Error('An unknown error occurred');
+      }
+    }
   }
 
   @Get()
-  findAll() {
-    return this.experienciasService.findAll();
+  public async findAll(): Promise<Experiencia[]> {
+    try {
+      return this.experienciasService.findAll();
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      } else {
+        throw new Error('An unknown error occurred');
+      }
+    }
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.experienciasService.findOne(+id);
+  public async findOne(@Param('id') id: string): Promise<Experiencia> {
+    try {
+      return this.experienciasService.findOne(id);
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      } else {
+        throw new Error('An unknown error occurred');
+      }
+    }
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateExperienciaDto: UpdateExperienciaDto) {
-    return this.experienciasService.update(+id, updateExperienciaDto);
+  @Put()
+  public async update(@Body() updateExperienciaDto: UpdateExperienciaDto): Promise<Experiencia> {
+    try {
+      return this.experienciasService.update(updateExperienciaDto);
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      } else {
+        throw new Error('An unknown error occurred');
+      }
+    }
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.experienciasService.remove(+id);
+  public async remove(@Param('id') id: string): Promise<Experiencia> {
+    try {
+      return this.experienciasService.remove(id);
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      } else {
+        throw new Error('An unknown error occurred');
+      }
+    }
   }
 }

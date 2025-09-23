@@ -45,23 +45,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Usuario = void 0;
 const typeorm_1 = require("typeorm");
 const bcrypt = __importStar(require("bcrypt"));
-// import { Estudiante } from '../../estudiantes/entities/estudiante.entity';
 const docente_entity_1 = require("../../docentes/entities/docente.entity");
-let Usuario = class Usuario {
+const auditable_entity_class_1 = require("../../config/auditable-entity.class");
+const role_entity_1 = require("../../roles/entities/role.entity");
+let Usuario = class Usuario extends auditable_entity_class_1.AuditableEntity {
     async hashPassword() {
         const salt = await bcrypt.genSalt();
-        if (this.clave) {
-            this.clave = await bcrypt.hash(this.clave, salt);
+        if (this.password) {
+            this.password = await bcrypt.hash(this.password, salt);
         }
     }
     async validatePassword(plainPassword) {
-        return await bcrypt.compare(plainPassword, this.clave);
+        return await bcrypt.compare(plainPassword, this.password);
     }
 };
 exports.Usuario = Usuario;
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)(),
-    __metadata("design:type", Number)
+    (0, typeorm_1.PrimaryColumn)('char', { length: 36 }),
+    (0, typeorm_1.Generated)('uuid'),
+    __metadata("design:type", String)
 ], Usuario.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)('varchar', { length: 12, nullable: false }),
@@ -70,16 +72,15 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)('varchar', { length: 100, nullable: false }),
     __metadata("design:type", String)
-], Usuario.prototype, "clave", void 0);
+], Usuario.prototype, "password", void 0);
 __decorate([
     (0, typeorm_1.Column)('varchar', { length: 50, nullable: false }),
     __metadata("design:type", String)
 ], Usuario.prototype, "email", void 0);
 __decorate([
-    (0, typeorm_1.Column)('varchar', { length: 20, nullable: false }) // Agregado: columna para tipoUsuario
-    ,
-    __metadata("design:type", String)
-], Usuario.prototype, "rol", void 0);
+    (0, typeorm_1.ManyToOne)(() => role_entity_1.Role, role => role.users),
+    __metadata("design:type", role_entity_1.Role)
+], Usuario.prototype, "role", void 0);
 __decorate([
     (0, typeorm_1.OneToOne)(() => docente_entity_1.Docente, (docente) => docente.usuario),
     (0, typeorm_1.JoinColumn)(),

@@ -12,31 +12,87 @@ import AdminEstudiantes from "../views/admin/AdminEstudiantes.vue";
 import AdminDocentes from "../views/admin/AdminDocentes.vue";
 import AdminMaterias from "../views/admin/AdminMaterias.vue";
 import AdminApp from '@/views/admin/AdminApp.vue'
-import Login from '@/views/Login.vue'
+import Login from '@/views/admin/Login.vue'
+import Unauthorized from '@/views/Unauthorized.vue'
+import { authGuard, guestGuard } from './guards'
+
 
 const routes = [
-  { path: '/', component: HomeView },
-  { path: '/about', component: AboutView },
-  { path: '/experiencia', component: Experiencia },
-  { path: '/programa', component: Programa },
-  { path: '/sistema', component: Sistema },
-  { path: '/sobre-nosotros', component: SobreNosotros },
+  {
+    path: '/',
+    component: HomeView,
+    meta: { requiresAuth: false }
+  },
+  {
+    path: '/about',
+    component: AboutView,
+    meta: { requiresAuth: false }
+  },
+  {
+    path: '/experiencia',
+    component: Experiencia,
+    meta: { requiresAuth: false }
+  },
+  {
+    path: '/programa',
+    component: Programa,
+    meta: { requiresAuth: false }
+  },
+  {
+    path: '/sistema',
+    component: Sistema,
+    meta: { requiresAuth: false }
+  },
+  {
+    path: '/sobre-nosotros',
+    component: SobreNosotros,
+    meta: { requiresAuth: false }
+  },
 
-  // Rutas admin (solo admins)
   {
     path: '/admin',
     component: AdminApp,
+    meta: { requiresAuth: true, roles: ['admin'] },
     children: [
-      { path: '', component: AdminApp }, // Dashboard por defecto
-      { path: 'login', component: Login }, // Dashboard por defecto
-      { path: 'dashboard', component: AdminDashboard }, // Dashboard por defecto
-      { path: 'estudiantes', component: AdminEstudiantes },
-      { path: 'docentes', component: AdminDocentes },
-      { path: 'materias', component: AdminMaterias },
+      {
+        path: '',
+        redirect: '/admin/dashboard'
+        // component: AdminApp,
+        // meta: { requiresAuth: true }
+      },
+      {
+        path: 'login',
+        component: Login,
+        meta: { requiresGuest: true, }
+      },
+      {
+        path: 'dashboard',
+        component: AdminDashboard,
+        meta: { requiresAuth: true, roles: ['admin'] }
+      },
+      {
+        path: 'estudiantes',
+        component: AdminEstudiantes,
+        meta: { requiresAuth: true, roles: ['admin'] }
+      },
+      {
+        path: 'docentes',
+        component: AdminDocentes,
+        meta: { requiresAuth: true, roles: ['admin'] }
+      },
+      {
+        path: 'materias',
+        component: AdminMaterias,
+        meta: { requiresAuth: true, roles: ['admin'] }
+      },
     ]
   },
+  {
+    path: '/unauthorized',
+    component: Unauthorized,
+    meta: { requiresAuth: false }
+  },
 
-  // Redirección para rutas no encontradas
   { path: '/:pathMatch(.*)*', redirect: '/' }
 ]
 
@@ -44,6 +100,7 @@ const router = createRouter({
   history: createWebHistory(),
   routes,
 })
+router.beforeEach(authGuard);
+router.beforeEach(guestGuard);
 
-// 👇 ESTA LÍNEA FALTABA
 export default router

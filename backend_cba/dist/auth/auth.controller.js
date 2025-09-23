@@ -23,7 +23,7 @@ let AuthController = class AuthController {
         this.authService = authService;
     }
     async login(credentials, res) {
-        const { acccessToken, refreshToken, user } = await this.authService.login(credentials);
+        const { accessToken, refreshToken, user } = await this.authService.login(credentials);
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
@@ -31,7 +31,7 @@ let AuthController = class AuthController {
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
         return {
-            acccessToken: acccessToken,
+            accessToken: accessToken,
             refreshToken: refreshToken,
             user: user
         };
@@ -46,7 +46,7 @@ let AuthController = class AuthController {
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
         return {
-            acccessToken: accessToken,
+            accessToken: accessToken,
             user: user,
         };
     }

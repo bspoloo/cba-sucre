@@ -1,6 +1,6 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { Sistema } from './entities/sistema.entity';
 
 import * as bcrypt from 'bcrypt';
@@ -13,10 +13,9 @@ export class SistemaService {
   constructor(
     @InjectRepository(Sistema)
     private readonly sistemaRepository: Repository<Sistema>,
-  ) {}
+  ) { }
 
-  // Crear usuario con contraseña cifrada
-  async create(createSistemaDto: CreateSistemaDto) {
+  public async create(createSistemaDto: CreateSistemaDto): Promise<Sistema> {
     const hashedPassword = await bcrypt.hash(createSistemaDto.password, 10);
     const nuevoUsuario = this.sistemaRepository.create({
       ...createSistemaDto,
@@ -25,43 +24,46 @@ export class SistemaService {
     return this.sistemaRepository.save(nuevoUsuario);
   }
 
-  // Listar todos los usuarios
-  findAll() {
+  public async findAll(): Promise<Sistema[]> {
     return this.sistemaRepository.find();
   }
 
-  // Buscar un usuario por ID
-  findOne(id: number) {
-    return this.sistemaRepository.findOne({ where: { id } });
+  public async findOne(id: string): Promise<Sistema> {
+    const system = await this.sistemaRepository.findOne({
+      where: {
+        id: id,
+        deletedAt: IsNull()
+      }
+    });
+    if (!system) throw new NotFoundException('Sistema inexistente');
+    return system;
   }
 
-  // Actualizar usuario (si cambia la contraseña, la encripta)
-  async update(id: number, updateSistemaDto: UpdateSistemaDto) {
-    const updatedData = { ...updateSistemaDto };
+  public async update(updateSistemaDto: UpdateSistemaDto): Promise<Sistema> {
+    const system = await this.findOne(updateSistemaDto.id);
     if (updateSistemaDto.password) {
-      updatedData.password = await bcrypt.hash(updateSistemaDto.password, 10);
+      system.password = await bcrypt.hash(updateSistemaDto.password, 10);
     }
-    await this.sistemaRepository.update(id, updatedData);
-    return this.findOne(id);
+    Object.assign(system, updateSistemaDto);
+    return this.sistemaRepository.save(system);
   }
 
-  // Actualizar contraseña sin modificar directamente el DTO
-  async updatePassword(id: number, password: string): Promise<void> {
+  public async updatePassword(id: string, password: string): Promise<{ message: string, success: boolean }> {
     const hashedPassword: string = await bcrypt.hash(password, 10);
     await this.sistemaRepository.update(id, { password: hashedPassword });
-  }
-
-  // Eliminar usuario
-  async remove(id: number) {
-    const user = await this.findOne(id);
-    if (!user) {
-      throw new Error(`Usuario con ID ${id} no encontrado`);
+    return {
+      message: 'contraseña acutalizada correctamente',
+      success: true
     }
-    return this.sistemaRepository.remove(user);
   }
 
-  // LOGIN: Validar usuario y devolver token
-  async login(username: string, password: string): Promise<{ token: string }> {
+  public async remove(id: string): Promise<Sistema> {
+    const user = await this.findOne(id);
+    Object.assign(user, { deletedAt: new Date() });
+    return this.sistemaRepository.save(user);
+  }
+
+  public async login(username: string, password: string): Promise<{ token: string }> {
     const user = await this.sistemaRepository.findOne({ where: { username } });
     if (!user || !user.password) {
       throw new UnauthorizedException('Usuario o contraseña incorrectos');
@@ -74,7 +76,7 @@ export class SistemaService {
 
     const token = jwt.sign(
       { id: user.id, username: user.username },
-      process.env.JWT_SECRET || 'secreto123', // Puedes mejorar esto usando ConfigService
+      process.env.JWT_SECRET || 'secreto123',
       { expiresIn: '1h' },
     );
 

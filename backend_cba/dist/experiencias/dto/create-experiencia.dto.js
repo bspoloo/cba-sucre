@@ -32,6 +32,12 @@ __decorate([
     __metadata("design:type", String)
 ], CreateExperienciaDto.prototype, "fdescripcion", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)({ message: 'El campo descripción no debe ser vacío' }),
+    (0, class_validator_1.IsString)({ message: 'El campo descripción debe ser de tipo cadena' }),
+    __metadata("design:type", String)
+], CreateExperienciaDto.prototype, "url_image", void 0);
+__decorate([
     (0, swagger_1.ApiProperty)({ example: '2024-04-13' }),
     (0, class_validator_1.IsNotEmpty)({ message: 'El campo fecha no debe ser vacío' }),
     (0, class_validator_1.IsDateString)({}, { message: 'El campo fecha debe ser de tipo fecha' }),

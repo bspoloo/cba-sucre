@@ -2,13 +2,13 @@
     <div class="user-card">
         <h2>Bienvenido, {{ authStore.user?.name }}</h2>
         <p><strong>Email:</strong> {{ authStore.user?.email }}</p>
-        <p><strong>Rol:</strong> {{ authStore.user?.rol }}</p>
+        <p><strong>Rol:</strong> {{ authStore.user?.role?.name }}</p>
         <button @click="authStore.logout">Cerrar sesión</button>
     </div>
 </template>
 
 <script setup lang="ts">
-import { useAuthStore } from '@/stores/auth'
+import { useAuthStore } from '@/stores'
 
 const authStore = useAuthStore()
 </script>

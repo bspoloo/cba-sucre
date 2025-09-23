@@ -16,7 +16,7 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(@Body() credentials: Credentials, @Res({ passthrough: true }) res: Response): Promise<Session> {
-    const { acccessToken, refreshToken, user } = await this.authService.login(credentials);
+    const { accessToken, refreshToken, user } = await this.authService.login(credentials);
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -25,7 +25,7 @@ export class AuthController {
     });
 
     return {
-      acccessToken: acccessToken,
+      accessToken: accessToken,
       refreshToken: refreshToken,
       user: user
     };
@@ -47,7 +47,7 @@ export class AuthController {
     })
 
     return {
-      acccessToken: accessToken,
+      accessToken: accessToken,
       user: user,
     }
   }

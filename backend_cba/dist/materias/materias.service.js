@@ -21,33 +21,45 @@ let MateriasService = class MateriasService {
     constructor(materiaRepository) {
         this.materiaRepository = materiaRepository;
     }
-    // Crear materia
     async create(createMateriaDto) {
-        const materia = this.materiaRepository.create(createMateriaDto);
-        return await this.materiaRepository.save(materia);
+        const materia = await this.materiaRepository.findOne({
+            where: {
+                nombre: createMateriaDto.nombre.trim(),
+                deletedAt: (0, typeorm_2.IsNull)(),
+            }
+        });
+        if (materia)
+            throw new Error('Materia ya existe con ese nombre');
+        return await this.materiaRepository.save(createMateriaDto);
     }
-    // Listar todos los materias
     async findAll() {
-        return await this.materiaRepository.find();
+        const materias = this.materiaRepository.find({
+            where: {
+                deletedAt: (0, typeorm_2.IsNull)()
+            }
+        });
+        return materias;
     }
-    // Buscar un materia por id
     async findOne(id) {
-        const materia = await this.materiaRepository.findOne({ where: { id } });
+        const materia = await this.materiaRepository.findOne({
+            where: {
+                id: id,
+                deletedAt: (0, typeorm_2.IsNull)()
+            },
+        });
         if (!materia)
             throw new common_1.NotFoundException(`Materia con ID ${id} no encontrado`);
         return materia;
     }
-    // Actualizar materia
-    async update(id, updateMateriaDto) {
-        const materia = await this.findOne(id);
+    async update(updateMateriaDto) {
+        const materia = await this.findOne(updateMateriaDto.id);
         Object.assign(materia, updateMateriaDto);
         return await this.materiaRepository.save(materia);
     }
-    // Eliminar materia
     async remove(id) {
-        const result = await this.materiaRepository.delete(id);
-        if (result.affected === 0)
-            throw new common_1.NotFoundException(`Materia con ID ${id} no encontrado`);
+        const materia = await this.findOne(id);
+        Object.assign(materia, { deletedAt: new Date() });
+        return this.materiaRepository.save(materia);
     }
 };
 exports.MateriasService = MateriasService;

@@ -11,36 +11,49 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsuariosService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const usuario_entity_1 = require("./entities/usuario.entity");
 const typeorm_2 = require("typeorm");
+const roles_service_1 = require("../roles/roles.service");
+const docente_entity_1 = require("../docentes/entities/docente.entity");
 let UsuariosService = class UsuariosService {
-    constructor(usuariosRepository) {
+    constructor(usuariosRepository, docentesRepository, rolesService) {
         this.usuariosRepository = usuariosRepository;
+        this.docentesRepository = docentesRepository;
+        this.rolesService = rolesService;
     }
     async create(createUsuarioDto) {
         try {
-            // Verificar si el usuario ya existe
-            const existe = await this.usuariosRepository.findOneBy({
+            const exists = await this.usuariosRepository.findOneBy({
                 name: createUsuarioDto.name.trim(),
+                deletedAt: (0, typeorm_2.IsNull)()
             });
-            if (existe) {
+            if (exists) {
                 throw new common_1.ConflictException('El usuario ya existe');
             }
-            // Crear el nuevo usuario
+            const role = await this.rolesService.findByName(createUsuarioDto.role);
             const usuario = this.usuariosRepository.create({
                 name: createUsuarioDto.name.trim(),
-                clave: process.env.DEFAULT_PASSWORD || 'default_password',
+                password: process.env.DEFAULT_PASSWORD || 'default_password',
                 email: createUsuarioDto.email.trim(),
-                rol: createUsuarioDto.rol.trim(),
+                role: role,
             });
-            // Guardar el usuario en la base de datos
             const usuarioBd = await this.usuariosRepository.save(usuario);
-            // Eliminar la clave antes de devolver el objeto
-            usuarioBd.clave = ''; // O también puedes usar '' si prefieres una cadena vacía
+            usuarioBd.password = '';
             return usuarioBd;
         }
         catch (error) {
@@ -49,35 +62,71 @@ let UsuariosService = class UsuariosService {
         }
     }
     async findAll() {
-        return this.usuariosRepository.find();
+        const users = this.usuariosRepository.find({
+            where: {
+                deletedAt: (0, typeorm_2.IsNull)()
+            },
+            relations: ['role', 'docente']
+        });
+        return users;
+    }
+    async findAllWithoutRelations() {
+        const users = await this.usuariosRepository.find({
+            where: {
+                deletedAt: (0, typeorm_2.IsNull)()
+            },
+            relations: ['role', 'docente']
+        });
+        console.log(users);
+        return users.filter((user) => !user.docente);
     }
     async findOne(id) {
-        const usuario = await this.usuariosRepository.findOneBy({ id });
-        if (!usuario) {
+        const user = await this.usuariosRepository.findOne({
+            where: {
+                id: id,
+                deletedAt: (0, typeorm_2.IsNull)()
+            },
+            relations: ['role']
+        });
+        if (!user) {
             throw new common_1.NotFoundException(`El usuario ${id} no existe`);
         }
-        return usuario;
+        return user;
     }
-    async update(id, updateUsuarioDto) {
-        const usuario = await this.findOne(id);
-        const usuarioUpdate = Object.assign(usuario, updateUsuarioDto);
-        return this.usuariosRepository.save(usuarioUpdate);
+    async update(updateUsuarioDto) {
+        const usuario = await this.findOne(updateUsuarioDto.id);
+        const docente = updateUsuarioDto.docenteId
+            ? await this.docentesRepository.findOne({
+                where: { id: updateUsuarioDto.docenteId, deletedAt: (0, typeorm_2.IsNull)() },
+            })
+            : null;
+        usuario.name = updateUsuarioDto.name;
+        usuario.email = updateUsuarioDto.email;
+        usuario.docente = docente;
+        const { password } = usuario, usuarioSinPassword = __rest(usuario, ["password"]);
+        await this.usuariosRepository.update(usuario.id, usuarioSinPassword);
+        return this.findOne(usuario.id);
     }
     async remove(id) {
         const usuario = await this.findOne(id);
-        return this.usuariosRepository.delete(usuario.id);
+        const usuarioUpdate = Object.assign(usuario, { deletedAt: new Date() });
+        return this.usuariosRepository.save(usuarioUpdate);
     }
-    async validate(name, clave) {
+    async validate(name, password) {
         const user = await this.usuariosRepository.findOne({
-            where: { name: name },
+            where: {
+                name: name,
+                deletedAt: (0, typeorm_2.IsNull)(),
+            },
+            relations: ['role']
         });
         if (!user)
             throw new common_1.NotFoundException('Usuario inexistente');
-        const isPasswordValid = await user.validatePassword(clave);
+        const isPasswordValid = await user.validatePassword(password);
         if (!isPasswordValid) {
-            throw new common_1.UnauthorizedException('Clave incorrecta');
+            throw new common_1.UnauthorizedException('Credenciales incorrectas');
         }
-        user.clave = ''; // O '' si prefieres una cadena vacía
+        user.password = '';
         return user;
     }
 };
@@ -85,5 +134,8 @@ exports.UsuariosService = UsuariosService;
 exports.UsuariosService = UsuariosService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(usuario_entity_1.Usuario)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __param(1, (0, typeorm_1.InjectRepository)(docente_entity_1.Docente)),
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository,
+        roles_service_1.RolesService])
 ], UsuariosService);

@@ -4,22 +4,24 @@ import Axios from 'axios'
 import { getActivePinia } from 'pinia'
 
 
-const axios = Axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL_ENDPOINT
+const api = Axios.create({
+  baseURL: import.meta.env.VITE_BASE_URL_API
 })
 
-axios.interceptors.request.use(config => {
+api.interceptors.request.use(config => {
   const pinia = getActivePinia()
-  if (!pinia) return config 
+  if (!pinia) return config
 
   const authStore = useAuthStore(pinia)
+  console.log("Token: ", authStore);
   if (config.headers) {
     config.headers['Content-Type'] = 'application/json'
     if (authStore.accessToken) {
       config.headers['Authorization'] = `Bearer ${authStore.accessToken}`
     }
   }
+
   return config
 })
 
-export default axios
+export default api

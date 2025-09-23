@@ -10,13 +10,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Sistema = void 0;
+const auditable_entity_class_1 = require("../../config/auditable-entity.class");
 const typeorm_1 = require("typeorm");
-let Sistema = class Sistema {
+let Sistema = class Sistema extends auditable_entity_class_1.AuditableEntity {
 };
 exports.Sistema = Sistema;
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)(),
-    __metadata("design:type", Number)
+    (0, typeorm_1.PrimaryColumn)('char', { length: 36 }),
+    (0, typeorm_1.Generated)('uuid'),
+    __metadata("design:type", String)
 ], Sistema.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)('varchar', { length: 50, nullable: false }),

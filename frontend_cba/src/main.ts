@@ -1,4 +1,3 @@
-
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import 'bootstrap-icons/font/bootstrap-icons.css'
@@ -14,17 +13,23 @@ import { faPlus, faEdit, faTrash, faSave } from '@fortawesome/free-solid-svg-ico
 
 import App from './App.vue'
 import router from './router'
-import { ConfirmationService, ToastService } from 'primevue';
 
-// Crear instancia de app y pinia
+import ToastService from 'primevue/toastservice';
+import ConfirmationService from 'primevue/confirmationservice';
+import Toast from 'primevue/toast';
+import { ConfirmDialog, Dialog } from 'primevue';
+
 const app = createApp(App)
 const pinia = createPinia()
+app.component('Dialog', Dialog);
+app.component('ConfirmDialog', ConfirmDialog);
 
-// Usar pinia y router
+app.use(ToastService);
+app.use(ConfirmationService);
 app.use(pinia)
 app.use(router)
+
 app.use(PrimeVue, {
-    // Default theme configuration
     theme: {
         preset: Aura,
         options: {
@@ -35,15 +40,8 @@ app.use(PrimeVue, {
     }
 });
 
-app.use(ConfirmationService);
-app.use(ToastService);
-
-// Registrar iconos
+app.component('Toast', Toast);
 library.add(faPlus, faEdit, faTrash, faSave)
 app.component('font-awesome-icon', FontAwesomeIcon)
-
-// Montar app
 app.mount('#app')
-
-// ✅ Exportar pinia si necesitas usarlo fuera de componentes (por ejemplo en Axios)
 export { pinia }

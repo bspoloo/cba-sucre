@@ -37,3 +37,9 @@ __decorate([
     (0, swagger_1.ApiProperty)({ example: '08:00' }),
     __metadata("design:type", String)
 ], CreateMateriaDto.prototype, "hora", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)({ message: 'El campo codigo no debe ser vacío' }),
+    (0, class_validator_1.IsString)({ message: 'El campo codigo debe ser de tipo cadena' }),
+    (0, swagger_1.ApiProperty)({ example: 'MAT-101' }),
+    __metadata("design:type", String)
+], CreateMateriaDto.prototype, "codigo", void 0);

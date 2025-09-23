@@ -21,33 +21,45 @@ let EstudiantesService = class EstudiantesService {
     constructor(estudianteRepository) {
         this.estudianteRepository = estudianteRepository;
     }
-    // Crear estudiante
     async create(createEstudianteDto) {
-        const estudiante = this.estudianteRepository.create(createEstudianteDto);
-        return await this.estudianteRepository.save(estudiante);
+        const estudiante = await this.estudianteRepository.findOne({
+            where: {
+                nombres: createEstudianteDto.nombres.trim(),
+                deletedAt: (0, typeorm_2.IsNull)(),
+            }
+        });
+        if (estudiante)
+            throw new Error('Materia ya existe con ese nombre');
+        return this.estudianteRepository.save(createEstudianteDto);
     }
-    // Listar todos los estudiantes
     async findAll() {
-        return await this.estudianteRepository.find();
+        const estudiantes = this.estudianteRepository.find({
+            where: {
+                deletedAt: (0, typeorm_2.IsNull)()
+            }
+        });
+        return estudiantes;
     }
-    // Buscar un estudiante por id
     async findOne(id) {
-        const estudiante = await this.estudianteRepository.findOne({ where: { id } });
+        const estudiante = await this.estudianteRepository.findOne({
+            where: {
+                id: id,
+                deletedAt: (0, typeorm_2.IsNull)()
+            }
+        });
         if (!estudiante)
             throw new common_1.NotFoundException(`Estudiante con ID ${id} no encontrado`);
         return estudiante;
     }
-    // Actualizar estudiante
-    async update(id, updateEstudianteDto) {
-        const estudiante = await this.findOne(id);
+    async update(updateEstudianteDto) {
+        const estudiante = await this.findOne(updateEstudianteDto.id);
         Object.assign(estudiante, updateEstudianteDto);
         return await this.estudianteRepository.save(estudiante);
     }
-    // Eliminar estudiante
     async remove(id) {
-        const result = await this.estudianteRepository.delete(id);
-        if (result.affected === 0)
-            throw new common_1.NotFoundException(`Estudiante con ID ${id} no encontrado`);
+        const estudiante = await this.findOne(id);
+        Object.assign(estudiante, { deletedAt: new Date() });
+        return this.estudianteRepository.save(estudiante);
     }
 };
 exports.EstudiantesService = EstudiantesService;

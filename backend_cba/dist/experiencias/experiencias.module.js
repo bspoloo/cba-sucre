@@ -17,7 +17,7 @@ let ExperienciasModule = class ExperienciasModule {
 exports.ExperienciasModule = ExperienciasModule;
 exports.ExperienciasModule = ExperienciasModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([experiencia_entity_1.Experiencia])], // Asegúrate de que la entidad sea registrada aquí
+        imports: [typeorm_1.TypeOrmModule.forFeature([experiencia_entity_1.Experiencia])],
         providers: [experiencias_service_1.ExperienciasService],
         controllers: [experiencias_controller_1.ExperienciasController],
     })

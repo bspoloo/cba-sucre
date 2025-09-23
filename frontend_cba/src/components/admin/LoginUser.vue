@@ -26,7 +26,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import axios from "@/plugins/axios";
+import api from "@/plugins/axios";
 import { useToast } from 'primevue/usetoast';
 import Toast from 'primevue/toast';
 import InputText from 'primevue/inputtext';
@@ -50,7 +50,7 @@ const handleLogin = async (values: any) => {
     errorMessage.value = "";
 
     try {
-        const response = await axios.post(`${import.meta.env.VITE_BASE_URL_API}/auth/login`, {
+        const response = await api.post(`${import.meta.env.VITE_BASE_URL_API}/auth/login`, {
             usuario: values.username,
             clave: values.password,
         });
@@ -81,10 +81,11 @@ const handleLogin = async (values: any) => {
         console.error("Error al iniciar sesión:", error);
         errorMessage.value = "Ocurrió un error al iniciar sesión. Inténtalo más tarde.";
 
+        const response = JSON.parse((error as any)?.request?.response);
         toast.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'Error al iniciar sesión',
+            detail: `Error al iniciar sesión: ${response.message ?? 'Error desconocido'}`,
             life: 3000
         });
     }

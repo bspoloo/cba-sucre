@@ -11,6 +11,14 @@ export class SistemaController {
   @Public()
   @Post('login')
   public async login(@Body() credentials: Credentials): Promise<Session> {
-    return this.authService.login(credentials);
+    try {
+      return this.authService.login(credentials);
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      } else {
+        throw new Error('An unknown error occurred');
+      }
+    }
   }
 }

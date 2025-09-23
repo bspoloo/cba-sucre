@@ -25,7 +25,7 @@ let AuthService = class AuthService {
         const access_token = await this.getAccessToken(payload);
         const refresh_token = await this.getRefreshToken(payload);
         return {
-            acccessToken: access_token,
+            accessToken: access_token,
             refreshToken: refresh_token,
             user: user,
         };

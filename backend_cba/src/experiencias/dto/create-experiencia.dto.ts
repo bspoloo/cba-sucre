@@ -16,6 +16,12 @@ export class CreateExperienciaDto {
     @MinLength(2, { message: 'El campo descripción no debe ser menor a 2 caracteres' })
     readonly fdescripcion!: string;
 
+    @ApiProperty()
+    @IsNotEmpty({ message: 'El campo descripción no debe ser vacío' })
+    @IsString({ message: 'El campo descripción debe ser de tipo cadena' })
+    readonly url_image!: string;
+
+
     @ApiProperty({ example: '2024-04-13' })
     @IsNotEmpty({ message: 'El campo fecha no debe ser vacío' })
     @IsDateString({}, { message: 'El campo fecha debe ser de tipo fecha' })

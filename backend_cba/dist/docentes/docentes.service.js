@@ -17,42 +17,74 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const docente_entity_1 = require("./entities/docente.entity");
+const usuarios_service_1 = require("../usuarios/usuarios.service");
+const materias_service_1 = require("../materias/materias.service");
 let DocentesService = class DocentesService {
-    constructor(docenteRepository) {
+    constructor(docenteRepository, userService, materiaService) {
         this.docenteRepository = docenteRepository;
+        this.userService = userService;
+        this.materiaService = materiaService;
     }
-    // Crear docente
     async create(createDocenteDto) {
-        const docente = this.docenteRepository.create(createDocenteDto);
-        return await this.docenteRepository.save(docente);
+        var _a;
+        const docenteExistente = await this.docenteRepository.findOne({
+            where: {
+                nombres: createDocenteDto.nombres.trim(),
+                deletedAt: (0, typeorm_2.IsNull)(),
+            }
+        });
+        if (docenteExistente) {
+            throw new Error('Docente ya existe con ese nombre');
+        }
+        const usuario = await this.userService.findOne(createDocenteDto.usuario_id);
+        const materia = await this.materiaService.findOne(createDocenteDto.materia_id);
+        const docente = this.docenteRepository.create(Object.assign(Object.assign({}, createDocenteDto), { materia,
+            usuario }));
+        const docenteSaved = await this.docenteRepository.save(docente);
+        const usuarioUpdated = await this.userService.update({
+            id: usuario.id,
+            docenteId: docenteSaved.id,
+            role: (_a = usuario.role) === null || _a === void 0 ? void 0 : _a.name,
+        });
+        docenteSaved.usuario = usuarioUpdated;
+        return await this.docenteRepository.save(docenteSaved);
     }
-    // Listar todos los docentes
     async findAll() {
-        return await this.docenteRepository.find();
+        const docentes = this.docenteRepository.find({
+            where: {
+                deletedAt: (0, typeorm_2.IsNull)()
+            },
+            relations: ['usuario', 'materia']
+        });
+        return docentes;
     }
-    // Buscar un docente por id
     async findOne(id) {
-        const docente = await this.docenteRepository.findOne({ where: { id } });
+        const docente = await this.docenteRepository.findOne({
+            where: {
+                id: id,
+                deletedAt: (0, typeorm_2.IsNull)()
+            }
+        });
         if (!docente)
             throw new common_1.NotFoundException(`Docente con ID ${id} no encontrado`);
         return docente;
     }
-    // Actualizar docente
-    async update(id, updateDocenteDto) {
-        const docente = await this.findOne(id);
+    async update(updateDocenteDto) {
+        const docente = await this.findOne(updateDocenteDto.id);
         Object.assign(docente, updateDocenteDto);
-        return await this.docenteRepository.save(docente);
+        return this.docenteRepository.save(docente);
     }
-    // Eliminar docente
     async remove(id) {
-        const result = await this.docenteRepository.delete(id);
-        if (result.affected === 0)
-            throw new common_1.NotFoundException(`Docente con ID ${id} no encontrado`);
+        const docente = await this.findOne(id);
+        Object.assign(docente, { deletedAt: new Date() });
+        return this.docenteRepository.save(docente);
     }
 };
 exports.DocentesService = DocentesService;
 exports.DocentesService = DocentesService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(docente_entity_1.Docente)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        usuarios_service_1.UsuariosService,
+        materias_service_1.MateriasService])
 ], DocentesService);
