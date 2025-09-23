@@ -13,10 +13,13 @@ exports.UpdateSistemaDto = void 0;
 const mapped_types_1 = require("@nestjs/mapped-types");
 const create_sistema_dto_1 = require("./create-sistema.dto");
 const swagger_1 = require("@nestjs/swagger");
+const class_validator_1 = require("class-validator");
 class UpdateSistemaDto extends (0, mapped_types_1.PartialType)(create_sistema_dto_1.CreateSistemaDto) {
 }
 exports.UpdateSistemaDto = UpdateSistemaDto;
 __decorate([
     (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsUUID)('4', { message: 'El id debe ser un UUID válido' }),
+    (0, class_validator_1.IsNotEmpty)({ message: 'El id es obligatorio' }),
     __metadata("design:type", String)
 ], UpdateSistemaDto.prototype, "id", void 0);

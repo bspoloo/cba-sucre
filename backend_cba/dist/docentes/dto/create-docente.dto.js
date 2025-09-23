@@ -19,7 +19,7 @@ __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsNotEmpty)({ message: 'El campo carnet de identidad no debe ser vacío' }),
     (0, class_validator_1.IsInt)({ message: 'El campo carnet de identidad debe ser de tipo entero' }),
-    (0, class_validator_1.Min)(5, { message: 'El campo temporadas no debe ser menor a 5 digitos' }),
+    (0, class_validator_1.Min)(5, { message: 'El campo carnet no debe ser menor a 5 digitos' }),
     __metadata("design:type", Number)
 ], CreateDocenteDto.prototype, "ci", void 0);
 __decorate([
@@ -53,6 +53,10 @@ __decorate([
     __metadata("design:type", String)
 ], CreateDocenteDto.prototype, "direccion", void 0);
 __decorate([
-    (0, class_validator_1.IsNumber)({}, { message: 'El campo materia_id debe ser de tipo número' }),
-    __metadata("design:type", Number)
+    (0, class_validator_1.IsString)({ message: 'El campo materia_id debe ser de tipo string' }),
+    __metadata("design:type", String)
 ], CreateDocenteDto.prototype, "materia_id", void 0);
+__decorate([
+    (0, class_validator_1.IsString)({ message: 'El campo materia_id debe ser de tipo string' }),
+    __metadata("design:type", String)
+], CreateDocenteDto.prototype, "usuario_id", void 0);

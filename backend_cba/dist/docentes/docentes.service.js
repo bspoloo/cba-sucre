@@ -17,26 +17,44 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const docente_entity_1 = require("./entities/docente.entity");
+const usuarios_service_1 = require("../usuarios/usuarios.service");
+const materias_service_1 = require("../materias/materias.service");
 let DocentesService = class DocentesService {
-    constructor(docenteRepository) {
+    constructor(docenteRepository, userService, materiaService) {
         this.docenteRepository = docenteRepository;
+        this.userService = userService;
+        this.materiaService = materiaService;
     }
     async create(createDocenteDto) {
-        const docente = await this.docenteRepository.findOne({
+        var _a;
+        const docenteExistente = await this.docenteRepository.findOne({
             where: {
                 nombres: createDocenteDto.nombres.trim(),
                 deletedAt: (0, typeorm_2.IsNull)(),
             }
         });
-        if (docente)
+        if (docenteExistente) {
             throw new Error('Docente ya existe con ese nombre');
-        return await this.docenteRepository.save(createDocenteDto);
+        }
+        const usuario = await this.userService.findOne(createDocenteDto.usuario_id);
+        const materia = await this.materiaService.findOne(createDocenteDto.materia_id);
+        const docente = this.docenteRepository.create(Object.assign(Object.assign({}, createDocenteDto), { materia,
+            usuario }));
+        const docenteSaved = await this.docenteRepository.save(docente);
+        const usuarioUpdated = await this.userService.update({
+            id: usuario.id,
+            docenteId: docenteSaved.id,
+            role: (_a = usuario.role) === null || _a === void 0 ? void 0 : _a.name,
+        });
+        docenteSaved.usuario = usuarioUpdated;
+        return await this.docenteRepository.save(docenteSaved);
     }
     async findAll() {
         const docentes = this.docenteRepository.find({
             where: {
                 deletedAt: (0, typeorm_2.IsNull)()
-            }
+            },
+            relations: ['usuario', 'materia']
         });
         return docentes;
     }
@@ -66,5 +84,7 @@ exports.DocentesService = DocentesService;
 exports.DocentesService = DocentesService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(docente_entity_1.Docente)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        usuarios_service_1.UsuariosService,
+        materias_service_1.MateriasService])
 ], DocentesService);

@@ -6,7 +6,7 @@ export class CreateDocenteDto {
     @ApiProperty()
     @IsNotEmpty({ message: 'El campo carnet de identidad no debe ser vacío' })
     @IsInt({ message: 'El campo carnet de identidad debe ser de tipo entero' })
-    @Min(5, { message: 'El campo temporadas no debe ser menor a 5 digitos' })
+    @Min(5, { message: 'El campo carnet no debe ser menor a 5 digitos' })
     readonly ci!: number;
 
     @ApiProperty()
@@ -35,6 +35,9 @@ export class CreateDocenteDto {
     @MinLength(2, { message: 'El campo direccion no debe ser menor a 2 caracteres' })
     readonly direccion!: string;
 
-    @IsNumber({}, { message: 'El campo materia_id debe ser de tipo número' })
-    readonly materia_id!: number;
+    @IsString({ message: 'El campo materia_id debe ser de tipo string' })
+    readonly materia_id!: string;
+
+    @IsString({ message: 'El campo materia_id debe ser de tipo string' })
+    readonly usuario_id!: string;
 }

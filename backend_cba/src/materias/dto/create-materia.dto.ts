@@ -17,15 +17,13 @@ export class CreateMateriaDto {
   @MinLength(2, { message: 'El campo aula no debe ser menor a 2 caracteres' })
   readonly aula!: string;
 
-//   @ApiProperty({ example: '08:00' })
-//   @IsNotEmpty({ message: 'El campo hora no debe ser vacío' })
-//   @IsDateString({}, { message: 'El campo hora debe ser de tipo fecha' }) // <-- esto probablemente está mal
-//   readonly hora!: string;
+  @IsNotEmpty({ message: 'El campo hora no debe ser vacío' })
+  @IsString({ message: 'El campo hora debe ser de tipo cadena' })
+  @ApiProperty({ example: '08:00' })
+  readonly hora!: string;
 
-@IsNotEmpty({ message: 'El campo hora no debe ser vacío' })
-@IsString({ message: 'El campo hora debe ser de tipo cadena' })
-@ApiProperty({ example: '08:00' })
-readonly hora!: string;
-
-
+  @IsNotEmpty({ message: 'El campo codigo no debe ser vacío' })
+  @IsString({ message: 'El campo codigo debe ser de tipo cadena' })
+  @ApiProperty({ example: 'MAT-101' })
+  readonly codigo!: string;
 }

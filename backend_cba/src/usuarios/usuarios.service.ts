@@ -11,11 +11,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Usuario } from './entities/usuario.entity';
 import { In, IsNull, Repository } from 'typeorm';
 import { RolesService } from '@/roles/roles.service';
+import { Docente } from '@/docentes/entities/docente.entity';
 
 @Injectable()
 export class UsuariosService {
   constructor(
     @InjectRepository(Usuario) private usuariosRepository: Repository<Usuario>,
+    @InjectRepository(Docente) private docentesRepository: Repository<Docente>,
     private readonly rolesService: RolesService
   ) { }
 
@@ -51,9 +53,23 @@ export class UsuariosService {
     const users = this.usuariosRepository.find({
       where: {
         deletedAt: IsNull()
-      }
+      },
+      relations: ['role', 'docente']
     });
     return users;
+  }
+
+  public async findAllWithoutRelations(): Promise<Usuario[]> {
+
+    const users = await this.usuariosRepository.find({
+      where: {
+        deletedAt: IsNull()
+      },
+      relations: ['role', 'docente']
+    });
+    console.log(users);
+
+    return users.filter((user: Usuario) => !user.docente);
   }
 
   public async findOne(id: string): Promise<Usuario> {
@@ -61,7 +77,8 @@ export class UsuariosService {
       where: {
         id: id,
         deletedAt: IsNull()
-      }
+      },
+      relations: ['role']
     });
     if (!user) {
       throw new NotFoundException(`El usuario ${id} no existe`);
@@ -71,9 +88,21 @@ export class UsuariosService {
 
   public async update(updateUsuarioDto: UpdateUsuarioDto): Promise<Usuario> {
     const usuario = await this.findOne(updateUsuarioDto.id);
-    const usuarioUpdate = Object.assign(usuario, updateUsuarioDto);
-    return this.usuariosRepository.save(usuarioUpdate);
+
+    const docente = updateUsuarioDto.docenteId
+      ? await this.docentesRepository.findOne({
+        where: { id: updateUsuarioDto.docenteId, deletedAt: IsNull() },
+      })
+      : null;
+
+    usuario.name = updateUsuarioDto.name!;
+    usuario.email = updateUsuarioDto.email!;
+    usuario.docente = docente!;
+    const { password, ...usuarioSinPassword } = usuario;
+    await this.usuariosRepository.update(usuario.id, usuarioSinPassword);
+    return this.findOne(usuario.id);
   }
+
 
   public async remove(id: string) {
     const usuario = await this.findOne(id);
@@ -83,18 +112,21 @@ export class UsuariosService {
 
   public async validate(name: string, password: string): Promise<Usuario> {
     const user = await this.usuariosRepository.findOne({
-      where: { name: name },
+      where: {
+        name: name,
+        deletedAt: IsNull(),
+      },
+      relations: ['role']
     });
 
     if (!user) throw new NotFoundException('Usuario inexistente');
 
     const isPasswordValid = await user.validatePassword(password);
     if (!isPasswordValid) {
-      throw new UnauthorizedException('password incorrecta');
+      throw new UnauthorizedException('Credenciales incorrectas');
     }
 
     user.password = '';
-
     return user;
   }
 }

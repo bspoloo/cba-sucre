@@ -39,3 +39,11 @@ __decorate([
     (0, class_validator_1.MinLength)(3, { message: 'El campo tipo Usuario no debe ser menor a 3 caracteres' }),
     __metadata("design:type", String)
 ], CreateUsuarioDto.prototype, "role", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)({ message: 'El campo tipo docenteId no debe ser vacío' }),
+    (0, class_validator_1.IsString)({ message: 'El campo tipo docenteId debe tener el formato correcto' }),
+    (0, class_validator_1.MaxLength)(15, { message: 'El campo tipo docenteId no debe ser mayor a 15 caracteres' }),
+    (0, class_validator_1.MinLength)(3, { message: 'El campo tipo docenteId no debe ser menor a 3 caracteres' }),
+    __metadata("design:type", String)
+], CreateUsuarioDto.prototype, "docenteId", void 0);

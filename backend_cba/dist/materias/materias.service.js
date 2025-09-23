@@ -45,7 +45,7 @@ let MateriasService = class MateriasService {
             where: {
                 id: id,
                 deletedAt: (0, typeorm_2.IsNull)()
-            }
+            },
         });
         if (!materia)
             throw new common_1.NotFoundException(`Materia con ID ${id} no encontrado`);

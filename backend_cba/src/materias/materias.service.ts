@@ -37,7 +37,7 @@ export class MateriasService {
       where: {
         id: id,
         deletedAt: IsNull()
-      }
+      },
     }
     );
     if (!materia) throw new NotFoundException(`Materia con ID ${id} no encontrado`);
