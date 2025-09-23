@@ -47,10 +47,11 @@ const handleLogin = async (values: any) => {
     console.error("Error al iniciar sesión:", error);
     errorMessage.value = "Ocurrió un error al iniciar sesión. Inténtalo más tarde.";
 
+    const response = JSON.parse((error as any)?.request?.response);
     toast.add({
       severity: 'error',
       summary: 'Error',
-      detail: 'Error al iniciar sesión',
+      detail: `Error al iniciar sesión: ${response.message ?? 'Error desconocido'}`,
       life: 3000
     });
   }

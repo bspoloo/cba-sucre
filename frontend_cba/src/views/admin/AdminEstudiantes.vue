@@ -1,28 +1,15 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import api from '@/plugins/axios'
-import type { Estudiante } from '@/interfaces/estudiante.interface'
+import type { Estudiante } from '@/interfaces/estudiante/estudiante.interface'
 import { useConfirm, useToast } from 'primevue'
+import { EstudianteService } from '@/services/estudiantes_service'
 
 const estudiantes = ref<Estudiante[]>([])
 const nuevoEstudiante = ref<Partial<Estudiante>>({})
 const toast = useToast();
-const confirModal = useConfirm();
-
-const cargarEstudiantes = async () => {
-  try {
-    const { data } = await api.get(`${import.meta.env.VITE_BASE_URL_API}/estudiantes`)
-    estudiantes.value = data
-  } catch (error) {
-    console.error('Error al cargar estudiantes:', error)
-    toast.add({
-      severity: 'error',
-      summary: 'Error',
-      detail: `Error al cargar estudiantes ${error ?? 'Error desconocido'}`,
-      life: 3000
-    });
-  }
-}
+const confirmModal = useConfirm();
+const estudiantesService = new EstudianteService();
 
 const agregarEstudiante = async () => {
   if (!nuevoEstudiante.value.ci || !nuevoEstudiante.value.nombres) {
@@ -62,8 +49,7 @@ const eliminarEstudiante = async (id: string) => {
   // if (!confirm('¿Estás seguro de eliminar este estudiante?')) return
   try {
     const response = await api.delete(`/estudiantes/${id}`);
-    const estudiante : Estudiante = response.data;   
-    cargarEstudiantes();
+    const estudiante: Estudiante = response.data;
 
     toast.add({
       severity: 'success',
@@ -73,18 +59,20 @@ const eliminarEstudiante = async (id: string) => {
     });
 
   } catch (error) {
-    console.error('Error al eliminar estudiante:', error)
+    console.error(error)
+    const response = JSON.parse((error as any)?.request?.responseText);
     toast.add({
       severity: 'error',
       summary: 'Error',
-      detail: `Error al eliminar estudiante ${error ?? 'Error desconocido'}`,
+      detail: `Error al eliminar el estudiante ${response.message ?? 'Error desconocido'}`,
       life: 3000
     });
+    return [];
   }
 }
 
 const confirmInsert = () => {
-  confirModal.require({
+  confirmModal.require({
     message: 'Estas seguro de insertar este estudiante?',
     header: 'Confirmacion',
     icon: 'pi pi-exclamation-triangle',
@@ -96,8 +84,9 @@ const confirmInsert = () => {
     acceptProps: {
       label: 'Guardar'
     },
-    accept: () => {
-      agregarEstudiante()
+    accept: async () => {
+      await agregarEstudiante();
+      estudiantes.value = await estudiantesService.getEstudiantes()
     },
     reject: () => {
       toast.add({ severity: 'error', summary: 'Rechazado', detail: 'Opcion cancelada', life: 3000 });
@@ -106,8 +95,8 @@ const confirmInsert = () => {
 }
 
 const confirmDelete = (id: string) => {
-  confirModal.require({
-    message: 'quieres borrar este estuiante?',
+  confirmModal.require({
+    message: 'quieres borrar este estudiante?',
     header: 'Danger Zone',
     icon: 'pi pi-info-circle',
     rejectLabel: 'Cancelar',
@@ -120,15 +109,18 @@ const confirmDelete = (id: string) => {
       label: 'Borrar',
       severity: 'danger'
     },
-    accept: () => {
-      eliminarEstudiante(id);
+    accept: async () => {
+      await eliminarEstudiante(id);
+      estudiantes.value = await estudiantesService.getEstudiantes()
     },
     reject: () => {
       toast.add({ severity: 'error', summary: 'Rejected', detail: 'Accion cancelada', life: 3000 });
     }
   });
 }
-onMounted(cargarEstudiantes)
+onMounted(async () => {
+  estudiantes.value = await estudiantesService.getEstudiantes()
+})
 </script>
 
 <template>

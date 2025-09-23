@@ -1,4 +1,4 @@
-import type { Usuario } from "./usuario.interface";
+import type { Usuario } from "../usuario/usuario.interface";
 
 export interface Role {
     id: string;

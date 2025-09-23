@@ -1,5 +1,5 @@
-import type { Docente } from "./docente.interface";
-import type { Role } from "./roles.interface";
+import type { Docente } from "../docente/docente.interface";
+import type { Role } from "../role/roles.interface";
 
 export interface Usuario {
     id: number;
